@@ -10,6 +10,7 @@ const userSchema = new mongosse.Schema({
     gender:{type:String,required:true,enum:["male","female"]},
     profilePic:{type:String,default:""}
 },{
+    // createdAt,updatedAt
     timestamps:true
 });
 

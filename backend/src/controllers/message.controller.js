@@ -3,7 +3,7 @@ const sendMessage = (req,res)=>{
         const {message} = req.body;
         const user = req.user;
         const {id} = req.params
-
+        
         res.status(200).json({
             message,
             senderId:user._id,
