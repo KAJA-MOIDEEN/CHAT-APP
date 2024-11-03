@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require("cookie-parser")
 const connectionDB = require("./src/config/connection")
 const authRoutes = require("./src/routes/auth.routes.js")
+const messageRoutes = require("./src/routes/message.route.js")
 require("dotenv").config()
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(cookieParser())
 
 //routes
 app.use('/api/auth',authRoutes);
+app.use('/api/message',messageRoutes);
 
 app.get("/",(req,res)=>{
     res.send("<h1>Hello World</h1")

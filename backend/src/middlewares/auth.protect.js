@@ -1,16 +1,17 @@
-const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
+const { compareToken } = require("../utils/authToken");
 
 const authProtect = async (req,res,next)=>{
     try {
-        const token = req.cookie.jwt
-        if(!token){
+        const {jwt} = req.cookies;
+        if(!jwt){
             return res.status(401).json({success:false,message:"Please log in to access this route"});
         }
-        const decoded = await compareToken(token)
-        const  user = await User.findById(decoded.id).select("-password")
+
+        const decoded = await compareToken(jwt)
+
+        const  user = await User.findById(decoded._id).select("-password")
         req.user = user
-        console.log(user);
         next()
 
     } catch (error) {
