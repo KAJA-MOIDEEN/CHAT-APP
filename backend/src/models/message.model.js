@@ -8,16 +8,16 @@ const messageSchema = new  mongoose.Schema({
         default:v4
     },
     senderId: {
-        type:mongoose.Schema.Types.ObjectId,
+        type:String,
         ref:"User",
         required:true
     },
     receiverId:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:String,
         ref:"User",
         required:true
     },
-    message:{
+    messages:{
         type:String,
         required:true
     }

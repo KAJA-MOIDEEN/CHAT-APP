@@ -1,7 +1,7 @@
-const mongosse = require("mongoose");
+const mongoose = require("mongoose");
 const { v4 } = require("uuid");
 
-const userSchema = new mongosse.Schema({
+const userSchema = new mongoose.Schema({
     _id:{type:String,require:true,default:v4},
     fullName:{type:String,required:true},
     userName:{type:String,required:true,unique:true},
@@ -10,10 +10,10 @@ const userSchema = new mongosse.Schema({
     gender:{type:String,required:true,enum:["male","female"]},
     profilePic:{type:String,default:""}
 },{
-    // createdAt,updatedAt
+    // Automatically adds createdAt and updatedAt
     timestamps:true
 });
 
-const User = mongosse.model('User',userSchema);
+const User = mongoose.model('User',userSchema);
 
 module.exports = User

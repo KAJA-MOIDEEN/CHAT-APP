@@ -10,8 +10,13 @@ const genToken = async (_id, res) => {
    });
 }
 
-const compareToken = async (token) => {
-    return await jwt.verify(token, process.env.JWT_SECRET_KEY);
+const compareToken = async (token,res) => {
+    
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY)
+    if (!token) {
+        return res.status(401).json({message: "Invalid token"})   
+    }
+    return decoded
 }
 
 module.exports = { genToken, compareToken };

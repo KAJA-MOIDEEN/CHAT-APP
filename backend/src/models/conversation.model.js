@@ -1,15 +1,17 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { v4 } = require("uuid");
 
 const conversationsSchema = new mongoose.Schema({
+    
     participants:[
         {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'User'
         }
     ],
     messages: [
         {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'Message',
             default: [],
         }
@@ -18,4 +20,4 @@ const conversationsSchema = new mongoose.Schema({
 
 const  Conversation = mongoose.model('Conversation', conversationsSchema);
 
-module.exports = Conversation;
+module.exports = Conversation

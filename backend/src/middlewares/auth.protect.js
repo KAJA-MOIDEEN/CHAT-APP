@@ -3,12 +3,12 @@ const { compareToken } = require("../utils/authToken");
 
 const authProtect = async (req,res,next)=>{
     try {
-        const {jwt} = req.cookies;
-        if(!jwt){
+        const token = req.cookies.jwt;
+        if(!token){
             return res.status(401).json({success:false,message:"Please log in to access this route"});
         }
 
-        const decoded = await compareToken(jwt)
+        const decoded = await compareToken(token,res)
 
         const  user = await User.findById(decoded._id).select("-password")
         req.user = user

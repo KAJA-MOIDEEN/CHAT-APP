@@ -24,7 +24,7 @@ const signup = async (req,res)=>{
         const hasedPassword = await bcrypt.hash(password,salt);
         
         //  create new user
-        const profilePic =  gender === "male" ? `https://avatar.iran.liara.run/public/boy?username=${userName}` : `https://avatar.iran.liara.run/public/girl?username=${username}`;
+        const profilePic =  gender === "male" ? `https://avatar.iran.liara.run/public/boy?username=${userName}` : `https://avatar.iran.liara.run/public/girl?username=${userName}`;
         const user = new User({
             fullName,userName,email,password:hasedPassword,gender,profilePic
         });
