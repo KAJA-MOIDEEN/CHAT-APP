@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { AuthContext } from '../authcontext/AuthContext'
 
 const NotFoundPage = () => {
+  const {navigate} = useContext(AuthContext)
   return (
-    <div>NotFoundPage</div>
+    <div onClick={()=>navigate("/")}>NotFoundPage</div>
   )
 }
 
