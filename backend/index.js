@@ -3,14 +3,22 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors")
 const connectionDB = require("./src/config/connection")
 const authRoutes = require("./src/routes/auth.routes.js")
-const messageRoutes = require("./src/routes/message.route.js")
+const messageRoutes = require("./src/routes/message.route.js");
+const corsAllows = require('./src/utils/corsconfig.js');
 require("dotenv").config()
 const app = express();
 
 //middleware
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors());
+app.use(express.json()); //  for parsing application/json
+
+app.use(cookieParser()); //  for parsing cookies
+
+app.use(cors({
+    origin:corsAllows.allOrigin, //     allow to server to accept request from different origin
+    methods:corsAllows.methods,
+    allowedHeaders:corsAllows.allowedHeaders,
+    credentials: true,
+}));
 
 //routes
 app.use('/api/auth',authRoutes);
