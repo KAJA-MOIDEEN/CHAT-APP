@@ -119,26 +119,27 @@ const Message = () => {
     
     <div className="w-[38rem] h-[42.1rem] bg-[#2E3845] flex flex-col overflow-y-scroll overflow-hidden gap-7 pt-10 cursor-pointer no-scrollbar">
     {contect.map((data,index)=>(
-    <div key={index} className="flex gap-x-3 hover:border-2 border-white border-transparent p-4 mx-2">
-		<img src="https://avatar.iran.liara.run/public/38" alt="" className="w-12 h-12 rounded-full dark:bg-gray-500 border-2 border-transparent hover:border-[#EC4A1C]" />
-		<div>
+    <div key={index} className="flex gap-x-3 border-2 hover:border-white border-transparent p-2 mx-2">
+		<img src={`https://avatar.iran.liara.run/public/${index+1}`} alt="" className="w-12 h-12 rounded-full dark:bg-gray-500 border-2 border-transparent hover:border-[#EC4A1C]" />
+		<div className='text-wrap text-white'>
 			<h2 className="text-lg font-semibold">Kaja Moideen</h2>
 			<span className="flex items-center space-x-1">
 				<p rel="noopener noreferrer" className="text-xs dark:text-gray-600">View profile</p>
 			</span>
 		</div>
-    <div className='pr-5 ml-auto'>
-      date
+    <div className='pr-5 text-white ml-auto'>
+      10:50 AM
     </div>
+
 	    </div>))}
       </div>
       
-      <div onClick={() => SetProfile(!profile)} className="w-4/5 bg-lime-500 cursor-pointer">
+      <div onClick={() => SetProfile(!profile)} className="w-4/5 bg-[#F7F2F8] cursor-pointer overflow-y-scroll overflow-hidden no-scrollbar">
         Message
       </div>
 
 
-      <div className={`bg-white transition-all duration-300 ease-in-out overflow-hidden ${profile ? 'w-[40rem] opacity-100' : 'w-0 opacity-0'}`}>
+      <div className={`bg-[#E0CAF0] transition-all duration-300 ease-in-out overflow-hidden ${profile ? 'w-[40rem] opacity-100' : 'w-0 opacity-0'}`}>
         profile for friend
       </div>
     </div>

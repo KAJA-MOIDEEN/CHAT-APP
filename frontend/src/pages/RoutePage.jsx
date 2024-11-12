@@ -5,6 +5,7 @@ import Login from './Login'
 import NotFoundPage from './NotFoundPage'
 import Message from './Message'
 import Profile from './Profile'
+import VerifyEmail from './VerifyPage'
 
 const RouterPage = () => {
   return (
@@ -17,6 +18,7 @@ const RouterPage = () => {
       <Route path="/login" element={<Login />}/>
       <Route path="/notFoundPage" element={<NotFoundPage />}/>
       <Route path="*" element={<NotFoundPage/>} />
+      <Route path='/:id/verify/:token' element={<VerifyEmail/>}/>
     </Routes>
     </>
   )

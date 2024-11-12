@@ -8,7 +8,7 @@ function App() {
   return (
     <>
     <AuthProvider>
-    <Toaster position='top-right' reverseOrder={true}/>
+    <Toaster position='top-right' reverseOrder={true} />
     <RouterPage/>
     </AuthProvider>
     </>

@@ -2,6 +2,10 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const { genToken } = require("../utils/authToken");
 const setUserToken = require("../utils/authUserDetailToken");
+const Verify = require("../models/verifyToken.model");
+const sendEmail = require("../utils/sendEmail");
+const crypto = require('crypto');
+
 
 const signup = async (req,res)=>{
     try {
@@ -23,30 +27,27 @@ const signup = async (req,res)=>{
         }
         //  hash password
         const salt = await bcrypt.genSalt(10);
-        const hasedPassword = await bcrypt.hash(password,salt);
+        const hasedPassword = await bcrypt.hash(password, salt);
         
         //  create new user
         const profilePic =  gender === "male" ? `https://avatar.iran.liara.run/public/boy?username=${userName}` : gender ==="female" ? `https://avatar.iran.liara.run/public/girl?username=${userName}` : `https://avatar.iran.liara.run/public/other?username=${userName}`;
-        const user = new User({
+        let user = new User({
             fullName,userName,email,password:hasedPassword,gender,profilePic,phone
         });
 
         await user.save();
 
-        //   generate token
-        await genToken(user._id,res);
-        const accessToken = await setUserToken(user)
-        const userDetails = {
-            _id:user._id,
-            fullName:user.fullName,
-            userName:user.userName,
-            email:user.email,
-            profilePic:user.profilePic, 
-        }
-        res.status(201).json({message:"User Created Successfully",
-            userDetails,
-            accessToken
-        });
+        // create a verification modle
+        const verify = await new Verify({
+            userId:user._id,
+            token: await crypto.randomBytes(32).toString('hex')
+        }).save();
+
+        // send email to user for verification
+        const url = `${process.env.BASE_URL}${user.id}/verify/${verify.token}`
+        await sendEmail(user.email,"Verify Email",url)
+
+        res.status(201).json({message:"An Email Send Your Account Please Verify"});
 
     } catch (error) {
         console.log("Error",error.message);
@@ -62,6 +63,23 @@ const login = async (req,res)=>{
 
         if(!user ||  !isMatch){
             return res.status(400).json({error:"Invalid Username or Password"})
+        }
+
+        if (!user.verified) {
+            let token = await Verify.findOne({userId:user.id})
+            if(!token){
+            // create a verification modle
+            const verify = await new Verify({
+            userId:user._id,
+            token: await crypto.randomBytes(32).toString('hex')
+            }).save();
+        // send email to user for verification
+        const url = await `${process.env.BASE_URL}${user._id}/verify/${verify.token}`
+        
+        await sendEmail(user.email,"Verify Email",url)
+            }
+            
+            return res.status(201).json({message:"An Email Send Your Account Please Verify"})
         }
         
         //   generate token
@@ -96,4 +114,32 @@ const  logout = (req,res)=>{
     }
 }
 
-module.exports = {signup,login,logout}
+const userVerify = async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.params.id });
+        
+        if (!user) return res.status(404).json({ message: "Invalid Link" });
+       
+        const token = await Verify.findOne({
+            userId: user._id,
+            token: req.params.token,
+        });
+        
+        if (!token) return res.status(404).json({ message: "Invalid Link" });
+
+        // Update only the 'verified' field
+        await User.updateOne({ _id: user._id }, { $set: { verified: true } });
+
+        // Delete the token document
+        await Verify.deleteOne({ _id: token._id });
+
+        res.status(200).json({ message: "User verified successfully" });
+        
+    } catch (error) {
+        res.status(500).json({ message: "Error in Verify User" });
+        console.log("Error in Verify User", error.message);
+    }
+};
+
+
+module.exports = {signup,login,logout,userVerify}

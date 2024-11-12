@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({children})=>{
     const [token,setToken] = useState(null);
     const [profile,SetProfile] = useState(false)
+    const [toggle, setToggle] = useState(true);
     const [state, setState] = useState("Login");
     const navigate = useNavigate()
 
@@ -17,7 +18,7 @@ export const AuthProvider = ({children})=>{
     }
 
     const data = {
-        token,setToken,state,setState,navigate,profile,SetProfile,checkToken
+        token,setToken,state,setState,navigate,profile,SetProfile,checkToken,toggle,setToggle
     }
     useEffect(()=>{
         checkToken()

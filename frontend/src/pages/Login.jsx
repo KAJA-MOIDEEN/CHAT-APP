@@ -37,9 +37,14 @@ const Login = () => {
   const login = async(data)=>{
     try {
       const res = await axios.post(backendUrl+"/api/auth/login",data,{withCredentials:true});
+      
+      if(res.status===201){
+          return  toast.success(res.data.message,{style:{backgroundColor:'#994AD2',color:"white"}});
+      }
+
    if(res.status === 200){
-    toast.success(res.data.message,{style:{backgroundColor:'#EC4A1C',color:"white"}});
-    const token = res.data.accessToken
+    toast.success(res.data.message,{style:{backgroundColor:'#994AD2',color:"white"}});
+    const token = res.data?.accessToken
     setToken(token);
     localStorage.setItem("accessToken",token)
     navigate("/")
