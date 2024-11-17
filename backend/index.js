@@ -5,6 +5,7 @@ const connectionDB = require("./src/config/connection")
 const authRoutes = require("./src/routes/auth.routes.js")
 const messageRoutes = require("./src/routes/message.route.js");
 const corsAllows = require('./src/utils/corsconfig.js');
+const userRoutes = require('./src/routes/user.routes.js')
 require("dotenv").config()
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(cors({
 //routes
 app.use('/api/auth',authRoutes);
 app.use('/api/message',messageRoutes);
-
+app.use("/api/user",userRoutes);
 app.get("/",(req,res)=>{
     res.send("<h1>Hello World</h1");
 });

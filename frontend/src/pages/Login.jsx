@@ -94,7 +94,7 @@ const Login = () => {
    },[]);
 
   return (
-    <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gray-900 text-white relative">
+    <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gray-900 text-white relative select-none">
       <img src={loginPic} alt="background" className="absolute inset-0 h-full w-full object-cover z-0 opacity-30" />
 
       <form onSubmit={handleSubmit} className="relative z-10 bg-opacity-10 border border-white/70 px-6 py-8 backdrop-blur-md rounded-lg sm:w-[420px] w-full mx-4">

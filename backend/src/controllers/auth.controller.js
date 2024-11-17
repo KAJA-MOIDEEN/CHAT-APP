@@ -64,7 +64,8 @@ const login = async (req,res)=>{
         if(!user ||  !isMatch){
             return res.status(400).json({error:"Invalid Username or Password"})
         }
-
+        // console.log(!user.verified);
+        
         if (!user.verified) {
             let token = await Verify.findOne({userId:user.id})
             if(!token){
@@ -118,13 +119,15 @@ const userVerify = async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
         
-        if (!user) return res.status(404).json({ message: "Invalid Link" });
+        if(!user){
+            return res.status(404).json({ message: "Invalid Link" });
+        } 
        
         const token = await Verify.findOne({
             userId: user._id,
             token: req.params.token,
         });
-        
+
         if (!token) return res.status(404).json({ message: "Invalid Link" });
 
         // Update only the 'verified' field

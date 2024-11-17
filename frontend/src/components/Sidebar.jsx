@@ -33,7 +33,7 @@ const Sidebar = () => {
 	};
 
 	return (
-		<div className={`flex flex-col h-screen p-1 ${toggle ? "w-60" : "w-16"} bg-[#281A34] text-white duration-200`}>
+		<div className={`flex flex-col h-screen p-1 ${toggle ? "w-60" : "w-16"} bg-[#281A34] text-white transition-all`}>
 			<div className="space-y-10">
 				<div className={`flex items-center ${toggle ? "justify-end pr-2" : "justify-center"}`}>
 					<button onClick={() => setToggle(!toggle)} className="mt-4 hover:text-white duration-200">
@@ -43,7 +43,7 @@ const Sidebar = () => {
 
 				{/* Search Bar */}
 				{toggle && (
-					<div className="relative">
+					<div className="relative mt-4">
 						<span className="absolute inset-y-0 left-0 flex items-center py-4">
 							<MdPersonSearch size={35} className="pl-3 text-black" />
 						</span>

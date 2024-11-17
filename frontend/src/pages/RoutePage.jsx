@@ -3,9 +3,9 @@ import {Routes,Route,} from "react-router-dom"
 import Home from './Home'
 import Login from './Login'
 import NotFoundPage from './NotFoundPage'
-import Message from './Message'
 import Profile from './Profile'
 import VerifyEmail from './VerifyPage'
+import Chat from './Chat'
 
 const RouterPage = () => {
   return (
@@ -13,7 +13,7 @@ const RouterPage = () => {
     <Routes>
       {<Route path="/" element={<Home />}>
       <Route path='/' element={<Profile />}/>
-      <Route path='/Message' element={<Message />}/>
+      <Route path='/Message' element={<Chat />}/>
       </Route>}
       <Route path="/login" element={<Login />}/>
       <Route path="/notFoundPage" element={<NotFoundPage />}/>
