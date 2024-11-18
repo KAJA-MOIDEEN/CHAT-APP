@@ -9,7 +9,7 @@ import axios from 'axios';
 import { backendUrl } from '../../config';
 
 const Sidebar = () => {
-	const { navigate, setToken, checkToken, token,toggle, setToggle } = useContext(AuthContext);
+	const { navigate, checkToken, token,toggle, setToggle,logout,decodedToken } = useContext(AuthContext);
 	const [activeItem, setActiveItem] = useState("Home");
 
 	useEffect(() => {
@@ -17,14 +17,13 @@ const Sidebar = () => {
 		if (!token) {
 			navigate('/login');
 		}
-	}, [checkToken, navigate, token]);
+	}, [navigate]);
 
 	const handleLogout = async () => {
 		try {
 			const res = await axios.post(backendUrl + "/api/auth/logout", {}, { withCredentials: true });
 			if (res.status === 200) {
-				localStorage.removeItem('accessToken');
-				setToken(null);
+				logout();
 				navigate('/login');
 			}
 		} catch (error) {
@@ -117,10 +116,10 @@ const Sidebar = () => {
 
 			{/* Profile Section */}
 			<div className="flex gap-2 justify-evenly pb-3 mt-auto cursor-pointer">
-				<img src="https://avatar.iran.liara.run/public/38" alt="Profile Pic" className="w-12 h-12 rounded-full border-2 hover:border-[#EC4A1C]" />
+				<img src={decodedToken?.profilePic} alt="Profile Pic" className="w-12 h-12 rounded-full border-2 hover:border-[#EC4A1C]" />
 				{toggle && (
 					<div>
-						<h2 className="text-lg font-semibold hover:text-white duration-200">Kaja Moideen</h2>
+						<h2 className="text-lg font-semibold hover:text-white duration-200">{decodedToken?.fullName}</h2>
 						<span className="text-xs hover:underline">View profile</span>
 					</div>
 				)}

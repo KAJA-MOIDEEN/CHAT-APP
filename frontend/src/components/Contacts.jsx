@@ -1,8 +1,8 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../authcontext/AuthContext';
 
 const Contacts = ({ setUser }) => {
-  const { users } = useContext(AuthContext);
+  const { users, getmessage, SetProfile } = useContext(AuthContext);
   const messageRefs = useRef([]);
 
   const handleMessageClick = (index) => {
@@ -10,7 +10,9 @@ const Contacts = ({ setUser }) => {
       messageRefs.current[index].focus();
     }
   };
-
+  useEffect(()=>{
+    return SetProfile(false);
+  },[])
   return (
     <div className="w-full md:w-[35%] h-64 md:h-full bg-[#2E3845] flex flex-col overflow-y-auto gap-7 p-4 md:pt-10 cursor-pointer no-scrollbar">
       {users?.map((data, index) => (
@@ -19,6 +21,7 @@ const Contacts = ({ setUser }) => {
           ref={(el) => (messageRefs.current[index] = el)}
           onClick={() => {
             handleMessageClick(index);
+            SetProfile(false);
             setUser(data);
           }}
           className="flex gap-3 p-2 border-2 hover:border-white border-transparent rounded-lg focus:outline-none focus:bg-[#e4674576]"

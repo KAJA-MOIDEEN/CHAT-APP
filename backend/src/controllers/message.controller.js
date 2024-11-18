@@ -35,23 +35,32 @@ const sendMessage = async(req,res)=>{
     }
 }
 
-const  getMessages = async (req,res)=>{
-    
+const getMessages = async (req, res) => {
     try {
-        const {id:userToChat} = req.params;
-        const senderId = req.user._id;
-        const conversation = await Conversation.findOne({
-            participants:{$all:[senderId,userToChat]},
-        }).populate("messages"); // not reffrnce but actual value
+        const { id: userToChat } = req.params;
+        console.log(userToChat);
+
+        const senderId = req.user?._id;
+        console.log(senderId);
         
-        if(!conversation){
-            return res.status(404).json({message:"Conversation not found"},[]);
+        if (!senderId) {
+            return res.status(401).json({ message: "Unauthorized: User not authenticated" });
         }
-        res.status(200).json({messages:conversation.messages});
+
+        const conversation = await Conversation.findOne({
+            participants: { $all: [senderId, userToChat] },
+        }).populate("messages"); // Populating the actual messages
+
+        if (!conversation) {
+            return res.status(404).json({ message: "Conversation not found" });
+        }
+
+        res.status(200).json({ messages: conversation.messages });
     } catch (error) {
-        console.error("Error in GetMessages controllers: ",error.message);
-        res.status(500).json({ message:"Internal Server Error" });
+        console.error("Error in GetMessages controllers: ", error.message);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
-}
+};
+
 
 module.exports = {sendMessage, getMessages};

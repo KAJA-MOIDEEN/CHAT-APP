@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AuthContext } from '../authcontext/AuthContext';
 import { IoVideocam } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
@@ -6,7 +6,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { FiSend } from "react-icons/fi";
 
 const Message = ({ user }) => {
-  const { profile, SetProfile } = useContext(AuthContext);
+  const { profile, SetProfile, decodedToken, getMessages } = useContext(AuthContext);
 
   if (!user || !user.profilePic) {
     return (
@@ -16,14 +16,16 @@ const Message = ({ user }) => {
     );
   }
 
+  useEffect(() => {
+    getMessages(user._id)
+    return SetProfile(false)
+  }, [SetProfile,user])
+
   return (
     <div className="w-full md:w-3/4 bg-[#F7F2F8] h-full flex flex-col">
       {/* Header */}
       <div className="h-20 border-b-2 flex items-center px-4 bg-white shadow-md">
-        <div
-          className="flex items-center cursor-pointer"
-          onClick={() => SetProfile(!profile)}
-        >
+        <div className="flex w-full items-center cursor-pointer" onClick={() => SetProfile(!profile)}>
           <img
             src={user.profilePic}
             alt="User Profile"
@@ -32,7 +34,11 @@ const Message = ({ user }) => {
           <div className="ml-4 font-bold text-lg hover:text-[#EC4A1C]">
             {user.fullName}
           </div>
+          <div className="flex items-center mx-3 text-sm text-gray-200">
+            <span class="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Online
+          </div>
         </div>
+
         <div className="ml-auto flex gap-6 text-gray-600">
           <IoVideocam size={23} className="cursor-pointer hover:text-black" />
           <FaSearch size={23} className="cursor-pointer hover:text-black" />
@@ -62,7 +68,7 @@ const Message = ({ user }) => {
               <p>I’m good, thank you! What about you?</p>
             </div>
             <img
-              src="https://via.placeholder.com/40"
+              src={decodedToken.profilePic}
               alt="Me"
               className="w-10 h-10 rounded-full"
             />
@@ -77,7 +83,7 @@ const Message = ({ user }) => {
           placeholder="Type a message..."
           className="flex-grow bg-gray-100 rounded-lg px-4 py-2 outline-none"
         />
-        <button className="ml-3 bg-blue-500 text-white rounded-full p-2 shadow-md hover:bg-blue-600">
+        <button className="ml-3 bg-[#EC4A1C] text-white rounded-full p-2 shadow-md hover:bg-[#281A34]">
           <FiSend size={20} />
         </button>
       </div>

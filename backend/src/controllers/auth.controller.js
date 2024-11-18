@@ -85,7 +85,6 @@ const login = async (req,res)=>{
         
         //   generate token
         await genToken(user._id,res);
-        const accessToken = await setUserToken(user)
         const userDetails = {
             _id:user._id,
             fullName:user.fullName,
@@ -93,8 +92,8 @@ const login = async (req,res)=>{
             email:user.email,
             profilePic:user.profilePic,
         }
+        const accessToken = await setUserToken(userDetails)
         res.status(200).json({message:"User logged in successfully",
-            userDetails,
             accessToken
         })
 

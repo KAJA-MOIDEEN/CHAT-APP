@@ -88,7 +88,6 @@ const Login = () => {
     const token = localStorage.getItem("accessToken")
     setToken(token);
     if(token){
-      console.log("Token",token);
       navigate("/")
     }
    },[]);

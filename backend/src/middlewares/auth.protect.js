@@ -12,8 +12,6 @@ const authProtect = async (req,res,next)=>{
 
         const  user = await User.findById(decoded._id).select("-password")
         req.user = user
-        console.log(req.user);
-        
         next()
 
     } catch (error) {

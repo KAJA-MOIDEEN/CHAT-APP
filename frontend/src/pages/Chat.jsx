@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../authcontext/AuthContext';
 import Contacts from '../components/Contacts';
 import Message from '../components/Message';
+import ProfileForFriend from '../components/ProfileForFriend';
 
 const Chat = () => {
   const { profile, getAllUser } = useContext(AuthContext);
@@ -17,11 +18,7 @@ const Chat = () => {
       <Contacts user={user} setUser={setUser} />
       <Message user={user} />
       {profile && (
-        <div
-          className="bg-[#E0CAF0] w-full md:w-[35%] h-64 md:h-full transition-all duration-300 ease-in-out overflow-hidden md:block"
-        >
-          Profile for friend
-        </div>
+        <ProfileForFriend user={user}/>
       )}
     </div>
   );
