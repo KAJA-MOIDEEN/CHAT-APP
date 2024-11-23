@@ -84,7 +84,8 @@ const login = async (req,res)=>{
         }
         
         //   generate token
-        await genToken(user._id,res);
+       const token = await genToken(user._id,res);
+       
         const userDetails = {
             _id:user._id,
             fullName:user.fullName,
@@ -92,11 +93,11 @@ const login = async (req,res)=>{
             email:user.email,
             profilePic:user.profilePic,
         }
+
         const accessToken = await setUserToken(userDetails)
         res.status(200).json({message:"User logged in successfully",
             accessToken
         })
-
     } catch (error) {
         console.log("Error",error.message);
         res.status(500).json({message:"Error in login"})

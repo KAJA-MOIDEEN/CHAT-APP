@@ -33,6 +33,7 @@ const Sidebar = () => {
 
 	return (
 		<div className={`flex flex-col h-screen p-1 ${toggle ? "w-60" : "w-16"} bg-[#281A34] text-white transition-all`}>
+			{/* toggle */}
 			<div className="space-y-10">
 				<div className={`flex items-center ${toggle ? "justify-end pr-2" : "justify-center"}`}>
 					<button onClick={() => setToggle(!toggle)} className="mt-4 hover:text-white duration-200">
@@ -42,7 +43,7 @@ const Sidebar = () => {
 
 				{/* Search Bar */}
 				{toggle && (
-					<div className="relative mt-4">
+					<div className="relative">
 						<span className="absolute inset-y-0 left-0 flex items-center py-4">
 							<MdPersonSearch size={35} className="pl-3 text-black" />
 						</span>
@@ -51,14 +52,7 @@ const Sidebar = () => {
 				)}
 
 				{/* Navigation Buttons */}
-				<ul className="pt-2 pb-4 space-y-1 text-sm">
-					<li className="rounded-sm">
-						<button onClick={() => { navigate("/"); setActiveItem("Home"); }}
-							className={`flex items-center p-2 space-x-3 ${toggle?"w-full":""} rounded-md ${activeItem === "Home" ? "bg-[#EC4A1C] text-black" : "hover:text-white duration-200"}`}>
-							<IoHomeOutline size={20} />
-							{toggle && <span>Home</span>}
-						</button>
-					</li>
+				<ul className="pl-2 space-y-5 text-sm">
 
 					<li className="rounded-sm">
 						<button

@@ -19,7 +19,7 @@ const Message = ({ user }) => {
   useEffect(() => {
     getMessages(user._id)
     return SetProfile(false)
-  }, [SetProfile,user])
+  }, [SetProfile, user])
 
   return (
     <div className="w-full md:w-3/4 bg-[#F7F2F8] h-full flex flex-col">
@@ -34,7 +34,7 @@ const Message = ({ user }) => {
           <div className="ml-4 font-bold text-lg hover:text-[#EC4A1C]">
             {user.fullName}
           </div>
-          <div className="flex items-center mx-3 text-sm text-gray-200">
+          <div className="flex items-center mx-3 text-sm text-slate-500">
             <span class="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Online
           </div>
         </div>
@@ -64,7 +64,7 @@ const Message = ({ user }) => {
 
           {/* Message from Logged-in User */}
           <div className="flex items-end justify-end space-x-3">
-            <div className="bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg max-w-xs">
+            <div className="bg-[#EC4A1C] text-white shadow-md px-4 py-2 rounded-lg max-w-xs">
               <p>I’m good, thank you! What about you?</p>
             </div>
             <img

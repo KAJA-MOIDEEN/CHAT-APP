@@ -1,21 +1,19 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../authcontext/AuthContext';
+import React from 'react';
 
-const Profile = () => {
-  const { profile, SetProfile } = useContext(AuthContext);
-
+const HomePage = () => {
   return (
-    <div className="flex w-full h-full">
-      <div className="w-[38rem] bg-lime-500">Contacts</div>
-      <div onClick={() => SetProfile(!profile)} className="w-4/5 bg-teal-500 cursor-pointer">
-        Message
-      </div>
-      
-      <div className={`bg-white transition-all duration-300 ease-in-out overflow-hidden ${profile ? 'w-[40rem] opacity-100' : 'w-0 opacity-0'}`}>
-        profile for friend
+    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-blue-500 to-teal-500 text-white">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold mb-4">Welcome to ChatApp</h1>
+        <p className="text-xl mb-6">Connect with friends and family effortlessly.</p>
+        <img 
+          src="https://via.placeholder.com/400x200" 
+          alt="ChatApp Poster" 
+          className="mx-auto rounded-lg shadow-lg"
+        />
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default HomePage;

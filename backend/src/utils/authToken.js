@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 const genToken = async (_id, res) => {
-    console.log(process.env.NODE_ENV);
-    
     try {
         const token = await jwt.sign({ _id }, process.env.JWT_SECRET_KEY, { expiresIn: "15d" });
         res.cookie("jwt", token, {
@@ -13,6 +11,7 @@ const genToken = async (_id, res) => {
             domain: "localhost", // For local dev
             path: "/",
         });
+        return token;
     } catch (error) {
         console.error("Token generation error:", error);
         res.status(500).send("Token generation failed");

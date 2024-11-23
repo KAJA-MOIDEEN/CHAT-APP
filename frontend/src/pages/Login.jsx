@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { AuthContext } from '../authcontext/AuthContext';
 
 const Login = () => {
-  const {token,setToken,state,setState,navigate} = useContext(AuthContext);
+  const {setToken,state,setState,navigate} = useContext(AuthContext);
   const refFullName = useRef(null);
   const refUserName = useRef(null);
   const refGenderMale = useRef(null);

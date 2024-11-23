@@ -50,7 +50,8 @@ const getMessages = async (req, res) => {
         const conversation = await Conversation.findOne({
             participants: { $all: [senderId, userToChat] },
         }).populate("messages"); // Populating the actual messages
-
+        
+        console.log(conversation);
         if (!conversation) {
             return res.status(404).json({ message: "Conversation not found" });
         }

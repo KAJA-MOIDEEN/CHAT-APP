@@ -10,7 +10,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const [profile, SetProfile] = useState(false);
-    const [toggle, setToggle] = useState(true);
+    const [toggle, setToggle] = useState(false);
     const [state, setState] = useState("Login");
     const [users, setUsers] = useState([]);
     const [decodedToken, setDecodedToken] = useState(null);
@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
 
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
-        console.log("call");
         setToken(null);
         SetProfile(false);
         setToggle(true);
@@ -53,12 +52,11 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const getMessages = useCallback(async (id) => {
-        const navigate = useNavigate();
     
         try {
             const res = await axios.get(`${backendUrl}/api/message/get/${id}`, { withCredentials: true });
             if (res.status === 200) {
-                console.log("Messages fetched: ", res.data.messages);
+                console.log("Messages Fetched: ", res.data.messages);
                 return res.data.messages; // Return the fetched messages
             }
         } catch (error) {
@@ -68,24 +66,24 @@ export const AuthProvider = ({ children }) => {
                 const { status, data } = error.response;
                 if (status === 401) {
                     // Unauthorized
-                    toast.error(data.message || "You are not authorized to access this resource");
+                    toast.error(data.message || "You Are Not Authorized to Access This Resource");
                     navigate("/login"); // Redirect to login page
                 } else if (status === 404) {
                     // Not Found
-                    toast.error(data.message || "Resource not found");
+                    toast.error(data.message || "Resource Not Found");
                 } else if (status === 500) {
                     toast.error(data.message || "Internal Server Error");
                 } else {
-                    toast.error("An unexpected error occurred. Please try again.");
+                    toast.error("An Unexpected Error Occurred. Please Try Again.");
                 }
             } else if (error.request) {
                 // No response was received from the server
-                toast.error("No response from the server. Please check your network connection.");
+                toast.error("No Response From The Server. Please Check Your Network Connection.");
             } else {
                 // Something went wrong in setting up the request
-                toast.error(`Request failed: ${error.message}`);
+                toast.error(`Request Failed: ${error.message}`);
             }
-            console.error("Error fetching messages:", error);
+            console.error("Error Fetching Messages:", error);
             return null; // Return null if an error occurred
         }
     }, [backendUrl, navigate]); // Add dependencies here
