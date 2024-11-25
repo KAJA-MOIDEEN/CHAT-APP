@@ -5,6 +5,7 @@ const setUserToken = require("../utils/authUserDetailToken");
 const Verify = require("../models/verifyToken.model");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require('crypto');
+const UploadImage = require("../utils/cloudinaryFileUpload");
 
 
 const signup = async (req,res)=>{
@@ -144,5 +145,31 @@ const userVerify = async (req, res) => {
     }
 };
 
+const profilePic = async (req, res)=>{
+    try {
+        // Check if a file was uploaded
+        if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+        }
+        // Update the user's profile picture
+        const url = await UploadImage(req.file.path,res);
 
-module.exports = {signup,login,logout,userVerify}
+        // Update the user's profile picture in the database
+        const updatedUser = await User.findByIdAndUpdate({_id:req.user._id},{profilePic:url},{new:true});
+
+        // check updateUser 
+        if(!updatedUser){
+            return res.status(404).json({ error: "User not found" });
+        }
+        
+        res.status(200).json({message:"Profile picture updated successfully",url:url});
+
+    } catch (error) {
+        console.log("Error in profilePic", error.message);
+        res.status(400).json({
+            error: "Failed to upload image"
+        })
+    }
+}
+
+module.exports = {signup,login,logout,userVerify,profilePic}

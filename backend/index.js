@@ -5,7 +5,8 @@ const connectionDB = require("./src/config/connection")
 const authRoutes = require("./src/routes/auth.routes.js")
 const messageRoutes = require("./src/routes/message.route.js");
 const corsAllows = require('./src/utils/corsconfig.js');
-const userRoutes = require('./src/routes/user.routes.js')
+const userRoutes = require('./src/routes/user.routes.js');
+const connectCloudinary = require('./src/config/cloudinary.config.js');
 require("dotenv").config()
 const app = express();
 
@@ -31,7 +32,8 @@ app.get("/",(req,res)=>{
 
 const port = process.env.PORT || 5000
 app.listen(port,()=>{
-    connectionDB();
+    connectionDB(); // MongoDb connection
+    connectCloudinary();// Cloudinary connection
     console.log(`Server Successfully running on http://localhost:${port}`);
     
 })
