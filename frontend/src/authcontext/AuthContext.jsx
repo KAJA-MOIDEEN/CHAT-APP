@@ -14,8 +14,9 @@ export const AuthProvider = ({ children }) => {
     const [state, setState] = useState("Login");
     const [users, setUsers] = useState([]);
     const [decodedToken, setDecodedToken] = useState(null);
+    const [conversation,setConversation] = useState(null)
     const navigate = useNavigate();
-
+    const [loading,setLoading] = useState(false)
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
         setToken(null);
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
     // Get all users function memoized with useCallback
     const getAllUser = useCallback(async () => {
+        setLoading(true)
         try {
             const res = await axios.get(`${backendUrl}/api/user/getalluser`, { withCredentials: true });
             setUsers(res.data);
@@ -48,16 +50,17 @@ export const AuthProvider = ({ children }) => {
                 return toast.error(error.response?.data?.error);
             }
             toast.error(error.message);
+        }finally{
+            setLoading(false)
         }
     }, []);
 
     const getMessages = useCallback(async (id) => {
-    
         try {
             const res = await axios.get(`${backendUrl}/api/message/get/${id}`, { withCredentials: true });
             if (res.status === 200) {
                 console.log("Messages Fetched: ", res.data.messages);
-                return res.data.messages; // Return the fetched messages
+                return setConversation(res.data.messages);
             }
         } catch (error) {
             // Error Handling
@@ -105,7 +108,11 @@ export const AuthProvider = ({ children }) => {
         setUsers,
         decodedToken,
         logout,
-        getMessages
+        getMessages,
+        conversation,
+        setConversation,
+        loading,
+        setLoading
     }), [
         token,
         state,
@@ -117,7 +124,11 @@ export const AuthProvider = ({ children }) => {
         logout,
         checkToken,
         getAllUser,
-        getMessages
+        getMessages,
+        conversation,
+        setConversation,
+        loading,
+        setLoading
     ]);
 
     // Run checkToken on mount

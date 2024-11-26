@@ -5,92 +5,102 @@ import axios from "axios"
 import { backendUrl } from '../../config';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../authcontext/AuthContext';
+import LoadingButton from '../components/LoadingButton';
 
 const Login = () => {
-  const {setToken,state,setState,navigate} = useContext(AuthContext);
+  const { setToken, state, setState, navigate, loading, setLoading } = useContext(AuthContext);
   const refFullName = useRef(null);
   const refUserName = useRef(null);
   const refGenderMale = useRef(null);
   const refGenderFemMale = useRef(null);
   const refGenderOthers = useRef(null);
-  const refEmail = useRef(null); 
+  const refEmail = useRef(null);
   const refPassword = useRef(null);
   const refConfirmPassword = useRef(null);
   const refPhone = useRef(null);
-  const signup = async(data)=>{
+  console.log(loading);
+  
+  const signup = async (data) => {
+    setLoading(true)
     try {
-      const res = await axios.post(backendUrl+"/api/auth/signup",data,{withCredentials:true});
-      if(res.status === 201){
-        toast.success(res.data.message,{style:{backgroundColor:'#EC4A1C',color:"white"}});
+      const res = await axios.post(backendUrl + "/api/auth/signup", data, { withCredentials: true });
+      if (res.status === 201) {
+        toast.success(res.data.message, { style: { backgroundColor: '#EC4A1C', color: "white" } });
         const token = res.data.accessToken
         setToken(token);
         navigate("/")
         return
       }
     } catch (error) {
-    if (error.response?.data?.error) {
-    return toast.error(error.response?.data?.error)  
-    }
-    toast.error(error.message)
+      if (error.response?.data?.error) {
+        return toast.error(error.response?.data?.error)
+      }
+      toast.error(error.message)
+    }finally{
+      setLoading(false)
     }
   }
-  const login = async(data)=>{
+  const login = async (data) => {
+    setLoading(true)
     try {
-      const res = await axios.post(backendUrl+"/api/auth/login",data,{withCredentials:true});
-      
-      if(res.status===201){
-          return  toast.success(res.data.message,{style:{backgroundColor:'#994AD2',color:"white"}});
+      const res = await axios.post(backendUrl + "/api/auth/login", data, { withCredentials: true });
+
+      if (res.status === 201) {
+        return toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
       }
 
-   if(res.status === 200){
-    toast.success(res.data.message,{style:{backgroundColor:'#994AD2',color:"white"}});
-    const token = res.data?.accessToken
-    setToken(token);
-    localStorage.setItem("accessToken",token)
-    navigate("/")
-    return
-    } 
+      if (res.status === 200) {
+        toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+        const token = res.data?.accessToken
+        setToken(token);
+        localStorage.setItem("accessToken", token)
+        navigate("/")
+        return
+      }
     } catch (error) {
-      toast.error(error.response?.data?.error) 
-    }
-  }
-  const handleSubmit = (e)=>{
-    e.preventDefault()
-    if (state === "Signup") {
-      const gender = refGenderMale.current.checked
-    ? "male"
-    : refGenderFemMale.current.checked
-    ? "female"
-    : refGenderOthers.current.checked
-    ? "others"
-    : null;
-
-    const data =  {
-      fullName:refFullName?.current.value,
-      userName:refUserName?.current.value,
-      gender:gender,  
-      phone:refPhone?.current.value,
-      email:refEmail?.current.value,
-      password:refPassword?.current.value,
-      confirmPassword:refConfirmPassword?.current.value
-    }
-    signup(data)
-    }else{
-      const  data = {
-        email:refEmail?.current.value,
-        password:refPassword?.current.value
-        }
-      login(data)
+      toast.error(error.response?.data?.error)
+    }finally{
+      setLoading(false)
     }
   }
   
-  useEffect(()=>{
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (state === "Signup") {
+      const gender = refGenderMale.current.checked
+        ? "male"
+        : refGenderFemMale.current.checked
+          ? "female"
+          : refGenderOthers.current.checked
+            ? "others"
+            : null;
+
+      const data = {
+        fullName: refFullName?.current.value,
+        userName: refUserName?.current.value,
+        gender: gender,
+        phone: refPhone?.current.value,
+        email: refEmail?.current.value,
+        password: refPassword?.current.value,
+        confirmPassword: refConfirmPassword?.current.value
+      }
+      signup(data)
+    } else {
+      const data = {
+        email: refEmail?.current.value,
+        password: refPassword?.current.value
+      }
+      login(data)
+    }
+  }
+
+  useEffect(() => {
     const token = localStorage.getItem("accessToken")
     setToken(token);
-    if(token){
+    if (token) {
       navigate("/")
     }
-   },[]);
+  }, []);
 
   return (
     <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gray-900 text-white relative select-none">
@@ -174,7 +184,7 @@ const Login = () => {
             <i className="ri-lock-2-fill text-xl"></i>
           </div>
 
-          {state==="Signup"?<div className="flex items-center border border-white/70 px-4 rounded-full">
+          {state === "Signup" ? <div className="flex items-center border border-white/70 px-4 rounded-full">
             <input
               type="password"
               placeholder="Confirm Password"
@@ -183,7 +193,7 @@ const Login = () => {
               ref={refConfirmPassword}
             />
             <i className="ri-lock-2-fill text-xl"></i>
-          </div>:""}
+          </div> : ""}
         </div>
 
         <div className="flex justify-between items-center mt-4 text-sm">
@@ -195,9 +205,9 @@ const Login = () => {
           <button className="text-white hover:underline">Forgot Password?</button>
         </div>
 
-        <button type="submit" className="w-full py-3 mt-6 bg-white text-black font-semibold rounded-full hover:bg-gray-200">
+        {loading ? (<LoadingButton />) : (<button type="submit" className="w-full py-3 mt-6 bg-white text-black font-semibold rounded-full hover:bg-gray-200">
           {state === "Signup" ? "Signup" : "Login"}
-        </button>
+        </button>)}
 
         {state === "Signup" ? (
           <div onClick={() => setState("Login")} className="text-sm text-center mt-4">

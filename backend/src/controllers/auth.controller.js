@@ -146,7 +146,7 @@ const userVerify = async (req, res) => {
 };
 
 const profilePic = async (req, res)=>{
-    try {
+    try {  
         // Check if a file was uploaded
         if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
@@ -161,7 +161,7 @@ const profilePic = async (req, res)=>{
         if(!updatedUser){
             return res.status(404).json({ error: "User not found" });
         }
-        
+
         res.status(200).json({message:"Profile picture updated successfully",url:url});
 
     } catch (error) {

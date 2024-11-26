@@ -38,10 +38,7 @@ const sendMessage = async(req,res)=>{
 const getMessages = async (req, res) => {
     try {
         const { id: userToChat } = req.params;
-        console.log(userToChat);
-
         const senderId = req.user?._id;
-        console.log(senderId);
         
         if (!senderId) {
             return res.status(401).json({ message: "Unauthorized: User not authenticated" });
@@ -50,8 +47,7 @@ const getMessages = async (req, res) => {
         const conversation = await Conversation.findOne({
             participants: { $all: [senderId, userToChat] },
         }).populate("messages"); // Populating the actual messages
-        
-        console.log(conversation);
+
         if (!conversation) {
             return res.status(404).json({ message: "Conversation not found" });
         }

@@ -4,9 +4,14 @@ import { IoVideocam } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
 import { FiSend } from "react-icons/fi";
+import Loader from './Loader';
 
 const Message = ({ user }) => {
-  const { profile, SetProfile, decodedToken, getMessages } = useContext(AuthContext);
+  const { profile, SetProfile, getMessages, conversation } = useContext(AuthContext);
+
+  useEffect(() => {
+    SetProfile(false);
+  }, [SetProfile, user]);
 
   if (!user || !user.profilePic) {
     return (
@@ -15,11 +20,6 @@ const Message = ({ user }) => {
       </div>
     );
   }
-
-  useEffect(() => {
-    getMessages(user._id)
-    return SetProfile(false)
-  }, [SetProfile, user])
 
   return (
     <div className="w-full md:w-3/4 bg-[#F7F2F8] h-full flex flex-col">
@@ -35,7 +35,7 @@ const Message = ({ user }) => {
             {user.fullName}
           </div>
           <div className="flex items-center mx-3 text-sm text-slate-500">
-            <span class="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Online
+            <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Online
           </div>
         </div>
 
@@ -47,34 +47,9 @@ const Message = ({ user }) => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-grow bg-gray-100 overflow-y-auto p-4">
-        {/* Sample Messages */}
-        <div className="flex flex-col space-y-4">
-          {/* Message from Other User */}
-          <div className="flex items-start space-x-3">
-            <img
-              src={user.profilePic}
-              alt="User"
-              className="w-10 h-10 rounded-full"
-            />
-            <div className="bg-white shadow-md px-4 py-2 rounded-lg text-gray-800">
-              <p>Hi there! How are you?</p>
-            </div>
-          </div>
-
-          {/* Message from Logged-in User */}
-          <div className="flex items-end justify-end space-x-3">
-            <div className="bg-[#EC4A1C] text-white shadow-md px-4 py-2 rounded-lg max-w-xs">
-              <p>I’m good, thank you! What about you?</p>
-            </div>
-            <img
-              src={decodedToken.profilePic}
-              alt="Me"
-              className="w-10 h-10 rounded-full"
-            />
-          </div>
-        </div>
-      </div>
+      {conversation && conversation.length > 0 ? (<div className="flex-grow bg-gray-100 overflow-y-auto p-4">
+        
+      </div>):(<Loader/>)}
 
       {/* Message Input */}
       <div className="h-16 border-t-2 bg-white flex items-center px-4">

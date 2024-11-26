@@ -4,6 +4,7 @@ import { AuthContext } from '../authcontext/AuthContext';
 
 function TopNavbar() {
   const {decodedToken} = useContext(AuthContext)
+
   return (
     <div className="flex items-center justify-between p-3 bg-custom-gradient border">
   {/* <!-- Left Side --> */}
@@ -11,7 +12,7 @@ function TopNavbar() {
   <input
     type="text"
     id="animated-input"
-  placeholder="Search contact, messages or options here."
+  placeholder="Search Contact,Messages or Options Here."
   className="px-4 py-2 w-1/3 rounded-full text-gray-700 placeholder-gray-500 focus:outline-none border border-gray-300"
   />
   </div>

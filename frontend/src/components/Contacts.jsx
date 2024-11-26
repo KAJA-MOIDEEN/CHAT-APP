@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../authcontext/AuthContext';
 
 const Contacts = ({ setUser }) => {
-  const { users, getmessage, SetProfile } = useContext(AuthContext);
+  const { users, getMessages, SetProfile } = useContext(AuthContext);
   const messageRefs = useRef([]);
 
   const handleMessageClick = (index) => {
@@ -23,6 +23,7 @@ const Contacts = ({ setUser }) => {
             handleMessageClick(index);
             SetProfile(false);
             setUser(data);
+            getMessages(data._id)
           }}
           className="flex gap-3 p-2 border-2 hover:border-white border-transparent rounded-lg focus:outline-none focus:bg-[#e4674576]"
           tabIndex="0"
