@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
 import { FiSend } from "react-icons/fi";
 import Loader from './Loader';
+import chatBG from "../assets/img/ChatBG.svg"
 
 const Message = ({ user }) => {
   const { profile, SetProfile, getMessages, conversation } = useContext(AuthContext);
@@ -47,7 +48,7 @@ const Message = ({ user }) => {
       </div>
 
       {/* Chat Messages */}
-      {conversation && conversation.length > 0 ? (<div className="flex-grow bg-gray-100 overflow-y-auto p-4">
+      {conversation && conversation.length > 0 ? (<div className="flex-grow bg-[url('../assets/img/ChatBG.svg')] bg-cover bg-center overflow-y-auto p-4">
         
       </div>):(<Loader/>)}
 
