@@ -45,7 +45,7 @@ const signup = async (req,res)=>{
         }).save();
 
         // send email to user for verification
-        const url = `${process.env.BASE_URL}${user.id}/verify/${verify.token}`
+        const url = `${process.env.BASE_URL}${user.id}/verify/${verify.token}/${user.fullName}`
         await sendEmail(user.email,"Verify Email",url)
 
         res.status(201).json({message:"An Email Send Your Account Please Verify"});
@@ -76,7 +76,7 @@ const login = async (req,res)=>{
             token: await crypto.randomBytes(32).toString('hex')
             }).save();
         // send email to user for verification
-        const url = await `${process.env.BASE_URL}${user._id}/verify/${verify.token}`
+        const url = await `${process.env.BASE_URL}${user._id}/verify/${verify.token}/${user.fullName}`
         
         await sendEmail(user.email,"Verify Email",url)
             }
@@ -122,8 +122,8 @@ const userVerify = async (req, res) => {
         
         if(!user){
             return res.status(404).json({ message: "Invalid Link" });
-        } 
-       
+        }
+
         const token = await Verify.findOne({
             userId: user._id,
             token: req.params.token,
@@ -137,7 +137,7 @@ const userVerify = async (req, res) => {
         // Delete the token document
         await Verify.deleteOne({ _id: token._id });
 
-        res.status(200).json({ message: "User verified successfully" });
+        res.status(200).json({ message: "Email verified! You can now log in to your account." });
         
     } catch (error) {
         res.status(500).json({ message: "Error in Verify User" });

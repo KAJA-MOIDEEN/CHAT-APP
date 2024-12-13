@@ -4,7 +4,7 @@ import Content from '../components/Content'
 
 const Home = () => {
   return (
-        <><div className='flex h-screen select-none'>
+        <><div className='flex h-screen w-full'>
         <Sidebar/>
         <Content/>
         </div>

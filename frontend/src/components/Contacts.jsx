@@ -14,7 +14,7 @@ const Contacts = ({ setUser }) => {
     return SetProfile(false);
   },[])
   return (
-    <div className="w-full md:w-[35%] h-64 md:h-full bg-[#2E3845] flex flex-col overflow-y-auto gap-7 p-4 md:pt-10 cursor-pointer no-scrollbar">
+    <div className="w-full md:w-[37%] h-64 md:h-full bg-[#2E3845] flex flex-col overflow-y-auto gap-7 p-4 md:pt-10 cursor-pointer no-scrollbar">
       {users?.map((data, index) => (
         <div
           key={index}

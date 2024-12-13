@@ -20,15 +20,15 @@ const ProfileForFriend = ({ user }) => {
 
       {/* Profile Section */}
       <div className="flex flex-col items-center justify-evenly w-full h-96 mb-3 bg-white">
-        <div className="w-52 h-52 rounded-full border-2 overflow-hidden" onClick={()=>setModalOpen(true)}>
+        <div className="w-52 h-52 rounded-full border-2 overflow-hidden" onClick={() => setModalOpen(true)}>
           <img className="w-full h-full object-cover hover:scale-105 transition-transform" src={user.profilePic} alt="ProfilePic" />
         </div>
         <p className="text-3xl text-slate-800">{user.fullName}</p>
         <p className="text-base text-slate-800">+91 {user.phone}</p>
       </div>
 
-       {/* Full-Screen Modal */}
-       {isModalOpen && (
+      {/* Full-Screen Modal */}
+      {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
           <div className="relative">
             <img
@@ -45,22 +45,22 @@ const ProfileForFriend = ({ user }) => {
         </div>
       )}
 
-      {/* About Section */}
+      {/* About Section 1 */}
       <div className="w-full bg-white p-3 mb-3">
         <p className="text-base text-slate-400">About</p>
-        <p className="text-base">Peace is a piece of life that I want most in my life.</p>
+        <p className="text-base">"Peace is a piece of life that I want most in my life."</p>
       </div>
 
-      {/* About Section */}
+      {/* About Section 2 */}
       <div className="w-full bg-white p-3 mb-3">
-        <p className="text-base text-slate-400">About</p>
-        <p className="text-base">Peace is a piece of life that I want most in my life.</p>
+        <p className="text-base text-slate-400">Hobbies</p>
+        <p className="text-base">I enjoy reading, traveling, and exploring new cultures. Creativity fuels my passion for painting and photography.</p>
       </div>
 
-      {/* About Section */}
+      {/* About Section 3 */}
       <div className="w-full bg-white p-3 mb-3">
-        <p className="text-base text-slate-400">About</p>
-        <p className="text-base">Peace is a piece of life that I want most in my life.</p>
+        <p className="text-base text-slate-400">Professional Interests</p>
+        <p className="text-base">I'm passionate about technology and innovation. My goal is to contribute to projects that create meaningful solutions for real-world challenges.</p>
       </div>
 
       {/* Action Section */}

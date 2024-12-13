@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [conversation,setConversation] = useState(null)
     const navigate = useNavigate();
     const [loading,setLoading] = useState(false)
+    const [verifiMessage ,setVerifiMessage] = useState()
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
         setToken(null);
@@ -91,6 +92,60 @@ export const AuthProvider = ({ children }) => {
         }
     }, [backendUrl, navigate]); // Add dependencies here
 
+    const verifyEmail = useCallback(async (id,token) => {
+        try {
+            setLoading(true)
+            const response = await axios.get(`${backendUrl}/api/auth/${id}/verify/${token}`);
+            setVerifiMessage(response.data.message);
+            console.log(response.data.message);
+            toast.success(response.data.message);
+        } catch (error) {
+            console.error("Error Verifying Email:", error);
+            toast.error(error.response?.data?.message);
+            setVerifiMessage(error.response?.data?.message);
+        }finally{
+            setLoading(false)
+        }
+    },[backendUrl, navigate]);
+
+    const sendMessage = useCallback( async(message,id)=>{
+        console.log(message);
+        
+        try {
+            const res = await axios.post(`${backendUrl}/api/message/send/${id}`, {message}, { withCredentials: true });
+            if (res.status === 200) {
+                console.log("Message Sent Successfully");
+                return setConversation([...conversation, res.data.message]);
+                }
+        } catch (error) {
+            // Error Handling
+            if (error.response) { 
+                // Server responded with a status code outside the 2xx range
+                const { status, data } = error.response;
+                if (status === 401) {
+                    // Unauthorized
+                    toast.error(data.message || "You Are Not Authorized to Access This Resource");
+                    navigate("/login"); // Redirect to login page
+                    } else if (status === 404) {
+                        // Not Found
+                        toast.error(data.message || "Resource Not Found");
+                        } else if (status === 500) {
+                            toast.error(data.message || "Internal Server Error");
+                            } else {
+                                toast.error("An Unexpected Error Occurred. Please Try Again.");
+                                }
+                                } else if (error.request) {
+                                    // No response was received from the server
+                                    toast.error("No Response From The Server. Please Check Your Network Connection.");
+                                    } else {
+                                        // Something went wrong in setting up the request
+                                        toast.error(`Request Failed: ${error.message}`);
+                                        }
+                                        console.error("Error Sending Message:", error);
+                                        return null; // Return null if an error occurred
+                                        }
+                                         // Add dependencies here
+    }, [backendUrl, navigate]);
     // Memoized data object
     const data = useMemo(() => ({
         token,
@@ -112,7 +167,10 @@ export const AuthProvider = ({ children }) => {
         conversation,
         setConversation,
         loading,
-        setLoading
+        setLoading,
+        sendMessage,
+        verifyEmail,
+        verifiMessage
     }), [
         token,
         state,
@@ -128,7 +186,10 @@ export const AuthProvider = ({ children }) => {
         conversation,
         setConversation,
         loading,
-        setLoading
+        setLoading,
+        sendMessage,
+        verifyEmail,
+        verifiMessage
     ]);
 
     // Run checkToken on mount

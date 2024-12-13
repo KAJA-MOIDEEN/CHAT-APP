@@ -24,7 +24,7 @@ const Chat = () => {
     <div className="flex flex-col md:flex-row w-full h-full overflow-hidden">
       <Contacts user={user} setUser={setUser} />
       <Message user={user} />
-      {profile && (<ProfileForFriend user={user}/>)}:""
+      {profile && (<ProfileForFriend user={user}/>)}
     </div>
   );
 };
