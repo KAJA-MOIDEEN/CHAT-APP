@@ -1,14 +1,14 @@
 import { useContext, useEffect, useRef } from 'react';
-import loginPic from '../assets/img/login-bg.png'
 import 'remixicon/fonts/remixicon.css';
 import axios from "axios"
 import { backendUrl } from '../../config';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../authcontext/AuthContext';
 import LoadingButton from '../components/LoadingButton';
+import assets from '../assets/assets';
 
 const Login = () => {
-  const { setToken, state, setState, navigate, loading, setLoading } = useContext(AuthContext);
+  const { setToken, state, setState, navigate, loading, setLoading ,signup,login} = useContext(AuthContext);
   const refFullName = useRef(null);
   const refUserName = useRef(null);
   const refGenderMale = useRef(null);
@@ -20,49 +20,7 @@ const Login = () => {
   const refPhone = useRef(null);
   console.log(loading);
   
-  const signup = async (data) => {
-    setLoading(true)
-    try {
-      const res = await axios.post(backendUrl + "/api/auth/signup", data, { withCredentials: true });
-      if (res.status === 201) {
-        toast.success(res.data.message, { style: { backgroundColor: '#EC4A1C', color: "white" } });
-        const token = res.data.accessToken
-        setToken(token);
-        navigate("/")
-        return
-      }
-    } catch (error) {
-      if (error.response?.data?.error) {
-        return toast.error(error.response?.data?.error)
-      }
-      toast.error(error.message)
-    }finally{
-      setLoading(false)
-    }
-  }
-  const login = async (data) => {
-    setLoading(true)
-    try {
-      const res = await axios.post(backendUrl + "/api/auth/login", data, { withCredentials: true });
 
-      if (res.status === 201) {
-        return toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
-      }
-
-      if (res.status === 200) {
-        toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
-        const token = res.data?.accessToken
-        setToken(token);
-        localStorage.setItem("accessToken", token)
-        navigate("/")
-        return
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.error)
-    }finally{
-      setLoading(false)
-    }
-  }
   
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -104,7 +62,7 @@ const Login = () => {
 
   return (
     <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gray-900 text-white relative select-none">
-      <img src={loginPic} alt="background" className="absolute inset-0 h-full w-full object-cover z-0 opacity-30" />
+      <img src={assets.loginBG} alt="background" className="absolute inset-0 h-full w-full object-cover z-0 opacity-30" />
 
       <form onSubmit={handleSubmit} className="relative z-10 bg-opacity-10 border border-white/70 px-6 py-8 backdrop-blur-md rounded-lg sm:w-[420px] w-full mx-4">
         <h1 className="text-center text-2xl font-semibold mb-8">{state === "Signup" ? "Signup" : "Login"}</h1>

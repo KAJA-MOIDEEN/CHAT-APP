@@ -29,6 +29,53 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('accessToken');
     }, []);
 
+    // login
+    const login = async (data) => {
+        setLoading(true)
+        try {
+          const res = await axios.post(backendUrl + "/api/auth/login", data, { withCredentials: true });
+    
+          if (res.status === 201) {
+            return toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+          }
+    
+          if (res.status === 200) {
+            toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+            const token = res.data?.accessToken
+            setToken(token);
+            localStorage.setItem("accessToken", token)
+            navigate("/")
+            return
+          }
+        } catch (error) {
+          toast.error(error.response?.data?.error)
+        }finally{
+          setLoading(false)
+        }
+      }
+
+    // signup 
+    const signup = async (data) => {
+        setLoading(true)
+        try {
+          const res = await axios.post(backendUrl + "/api/auth/signup", data, { withCredentials: true });
+          if (res.status === 201) {
+            toast.success(res.data.message, { style: { backgroundColor: '#EC4A1C', color: "white" } });
+            const token = res.data.accessToken
+            setToken(token);
+            navigate("/")
+            return
+          }
+        } catch (error) {
+          if (error.response?.data?.error) {
+            return toast.error(error.response?.data?.error)
+          }
+          toast.error(error.message)
+        }finally{
+          setLoading(false)
+        }
+      }
+      
     // Check token function memoized with useCallback
     const checkToken = useCallback(() => {
         const token = localStorage.getItem("accessToken");
@@ -56,6 +103,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    // Get all conversation function memoized with useCallback
     const getMessages = useCallback(async (id) => {
         try {
             const res = await axios.get(`${backendUrl}/api/message/get/${id}`, { withCredentials: true });
@@ -92,6 +140,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, [backendUrl, navigate]); // Add dependencies here
 
+    // verifyEmail
     const verifyEmail = useCallback(async (id,token) => {
         try {
             setLoading(true)
@@ -108,6 +157,7 @@ export const AuthProvider = ({ children }) => {
         }
     },[backendUrl, navigate]);
 
+    // sending message
     const sendMessage = useCallback( async(message,id)=>{
         console.log(message);
         
@@ -146,6 +196,7 @@ export const AuthProvider = ({ children }) => {
                                         }
                                          // Add dependencies here
     }, [backendUrl, navigate]);
+
     // Memoized data object
     const data = useMemo(() => ({
         token,
@@ -170,7 +221,8 @@ export const AuthProvider = ({ children }) => {
         setLoading,
         sendMessage,
         verifyEmail,
-        verifiMessage
+        verifiMessage,
+        signup,login
     }), [
         token,
         state,
@@ -189,7 +241,8 @@ export const AuthProvider = ({ children }) => {
         setLoading,
         sendMessage,
         verifyEmail,
-        verifiMessage
+        verifiMessage,
+        signup,login
     ]);
 
     // Run checkToken on mount

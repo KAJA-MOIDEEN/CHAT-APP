@@ -21,7 +21,7 @@ const RouterPage = () => {
       <Route path="/login" element={<Login />}/>
       <Route path="/notFoundPage" element={<NotFoundPage />}/>
       <Route path="*" element={<NotFoundPage/>} />
-      <Route path='/:id/verify/:token/:fullname' element={<VerifyEmail/>}/>
+      <Route path='/:id/verify/:token/:email' element={<VerifyEmail/>}/>
     </Routes>
     </>
   )
