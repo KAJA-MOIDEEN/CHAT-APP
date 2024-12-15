@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [conversation,setConversation] = useState(null)
     const navigate = useNavigate();
     const [loading,setLoading] = useState(false)
+    const [msgLoading,setMsgLoading] = useState(false)
     const [verifiMessage ,setVerifiMessage] = useState()
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
@@ -105,11 +106,53 @@ export const AuthProvider = ({ children }) => {
 
     // Get all conversation function memoized with useCallback
     const getMessages = useCallback(async (id) => {
+        setConversation(null)
+        try {
+            setMsgLoading(true)
+            const res = await axios.get(`${backendUrl}/api/message/get/${id}`, { withCredentials: true });
+            if (res.status === 200) {
+                // console.log("Messages Fetched: ", res.data.messages);
+                setConversation(res.data.messages);
+            }
+        } catch (error) {
+            // Error Handling
+            if (error.response) {
+                // Server responded with a status code outside the 2xx range
+                const { status, data } = error.response;
+                if (status === 401) {
+                    // Unauthorized
+                    toast.error(data.message || "You Are Not Authorized to Access This Resource");
+                    navigate("/login"); // Redirect to login page
+                } else if (status === 404) {
+                    // Not Found
+                    toast.error(data.message || "Resource Not Found");
+                } else if (status === 500) {
+                    toast.error(data.message || "Internal Server Error");
+                } else {
+                    toast.error("An Unexpected Error Occurred. Please Try Again.");
+                }
+            } else if (error.request) {
+                // No response was received from the server
+                toast.error("No Response From The Server. Please Check Your Network Connection.");
+            } else {
+                // Something went wrong in setting up the request
+                toast.error(`Request Failed: ${error.message}`);
+            }
+            console.error("Error Fetching Messages:", error);
+            return null; // Return null if an error occurred
+        }finally{
+            setMsgLoading(false)
+        }
+    }, [backendUrl, navigate]); // Add dependencies here
+
+    // Get all conversation function memoized with useCallback
+    const getMessage = useCallback(async (id) => {
+        setConversation(null)
         try {
             const res = await axios.get(`${backendUrl}/api/message/get/${id}`, { withCredentials: true });
             if (res.status === 200) {
-                console.log("Messages Fetched: ", res.data.messages);
-                return setConversation(res.data.messages);
+                // console.log("Messages Fetched: ", res.data.messages);
+                setConversation(res.data.messages);
             }
         } catch (error) {
             // Error Handling
@@ -222,7 +265,7 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup,login
+        signup,login,getMessage,msgLoading
     }), [
         token,
         state,
@@ -242,7 +285,7 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup,login
+        signup,login,getMessage,msgLoading
     ]);
 
     // Run checkToken on mount
