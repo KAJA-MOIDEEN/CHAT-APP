@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
 
     // Get all conversation function memoized with useCallback
     const getMessages = useCallback(async (id) => {
-        setConversation(null)
+        // setConversation(null)
         try {
             setMsgLoading(true)
             const res = await axios.get(`${backendUrl}/api/message/get/${id}`, { withCredentials: true });
@@ -208,7 +208,7 @@ export const AuthProvider = ({ children }) => {
             const res = await axios.post(`${backendUrl}/api/message/send/${id}`, {message}, { withCredentials: true });
             if (res.status === 200) {
                 console.log("Message Sent Successfully");
-                return setConversation([...conversation, res.data.message]);
+                return setConversation((prev) => [...prev, res.data.message]);
                 }
         } catch (error) {
             // Error Handling

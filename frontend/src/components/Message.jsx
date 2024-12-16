@@ -1,18 +1,28 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
-import { AuthContext } from '../authcontext/AuthContext';
+import React, { useContext, useRef, useState, useEffect, useCallback } from "react";
+import { AuthContext } from "../authcontext/AuthContext";
 import { IoVideocam } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { CiMenuKebab } from "react-icons/ci";
 import { FiSend } from "react-icons/fi";
 import ChatBG from "../assets/img/ChatBG.svg";
-import Skeleton from './Skeleton';
-import Convo from './convo';
+import Skeleton from "./Skeleton";
+import Convo from "./convo";
 
 const Message = ({ user }) => {
-  const { profile, SetProfile, conversation, sendMessage, getMessage, msgLoading,decodedToken } = useContext(AuthContext);
-  const [isSending, setSending] = useState(false);
+  const {
+    profile,
+    SetProfile,
+    conversation,
+    sendMessage,
+    getMessage,
+    msgLoading,
+    decodedToken,
+  } = useContext(AuthContext);
+
+  const [message, setMessage] = useState("");
   const inputRef = useRef();
-  
+  const endOfMessagesRef = useRef(); // Ref for scrolling to bottom
+
   // Fetch conversation when component mounts or when the user changes
   useEffect(() => {
     if (user) {
@@ -20,14 +30,21 @@ const Message = ({ user }) => {
     }
   }, [user, getMessage]);
 
-  const handleSendMessage = async (message, _id) => {
-    if (!message) return;
-    setSending(true);
-    await sendMessage(message, _id);
-    inputRef.current.value = ''; // Clear input after sending
-    await getMessage(_id); // Re-fetch conversation after sending a message
-    setSending(false);
-  };
+  // Auto-scroll to the bottom when conversation updates
+  useEffect(() => {
+    if (endOfMessagesRef.current) {
+      endOfMessagesRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [conversation]);
+
+  // Handle sending a message
+  const handleSendMessage = useCallback(async () => {
+    if (!message.trim()) return; // Prevent sending empty messages
+    const currentMessage = message.trim(); // Capture the current message
+    setMessage(""); // Clear input immediately
+    await sendMessage(currentMessage, user._id);
+    await getMessage(user._id); // Re-fetch conversation
+  }, [message, user._id, sendMessage, getMessage]);
 
   if (msgLoading) {
     return (
@@ -49,7 +66,10 @@ const Message = ({ user }) => {
     <div className="w-full h-full flex flex-col">
       {/* Header */}
       <div className="h-20 border-b-2 flex items-center px-4 bg-white shadow-md">
-        <div className="flex w-full items-center cursor-pointer" onClick={() => SetProfile(!profile)}>
+        <div
+          className="flex w-full items-center cursor-pointer"
+          onClick={() => SetProfile(!profile)}
+        >
           <img
             src={user.profilePic}
             alt="User Profile"
@@ -59,7 +79,8 @@ const Message = ({ user }) => {
             {user.fullName}
           </div>
           <div className="flex items-center mx-3 text-sm text-slate-500">
-            <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Online
+            <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span>{" "}
+            Online
           </div>
         </div>
         <div className="ml-auto flex gap-6 text-gray-600">
@@ -75,18 +96,24 @@ const Message = ({ user }) => {
         style={{ backgroundImage: `url(${ChatBG})` }}
       >
         {conversation && conversation.length > 0 ? (
-          conversation?.map((message, index) => (
-          <Convo key={index} message={message} user={user} author={decodedToken} />
+          conversation.map((message, index) => (
+            <Convo
+              key={index}
+              message={message}
+              user={user}
+              author={decodedToken}
+            />
           ))
         ) : (
           <p className="flex text-gray-500 text-xl justify-center items-center h-full">
-            {conversation === null || conversation.length === 0 ?
-              "Send a message to start a conversation" :
-              "Loading conversation..."}
+            {conversation === null || conversation.length === 0
+              ? "Send a message to start a conversation"
+              : "Loading conversation..."}
           </p>
         )}
+        {/* Invisible element to scroll into view */}
+        <div ref={endOfMessagesRef}></div>
       </div>
-
 
       {/* Message Input */}
       <div className="h-16 border-t-2 bg-white flex items-center px-4">
@@ -95,16 +122,15 @@ const Message = ({ user }) => {
           type="text"
           placeholder="Type a message..."
           className="flex-grow bg-gray-100 rounded-lg px-4 py-2 outline-none"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
         />
         <button
-          onClick={() => handleSendMessage(inputRef.current.value, user._id)}
+          onClick={handleSendMessage}
           className="ml-3 bg-[#EC4A1C] text-white rounded-full p-2 w-9 h-9 shadow-md hover:bg-[#281A34]"
         >
-          {isSending ? (
-            <span className="loading loading-spinner loading-sm"></span>
-          ) : (
-            <FiSend size={20} />
-          )}
+          <FiSend size={20} />
         </button>
       </div>
     </div>

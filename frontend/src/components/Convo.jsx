@@ -1,13 +1,12 @@
 import React from 'react';
 
 const Convo = ({ message, user, author }) => {
-  console.log(message, user);
 
   const fromMe = author._id === message.senderId;
 
   const chatBubbleClass = fromMe
-    ? "ml-auto bg-[#EC4A1C] text-white rounded-lg p-3 max-w-[70%] break-words"
-    : "mr-auto bg-gray-200 text-gray-600 rounded-lg p-3 max-w-[70%] break-words";
+    ? "ml-auto bg-[#EC4A1C] text-white rounded-lg p-3 max-w-[45rem] break-words"
+    : "mr-auto bg-gray-200 text-gray-600 rounded-lg p-3 max-w-[45rem] break-words";
 
   const ProfilePic = fromMe ? author.profilePic : user.profilePic;
 

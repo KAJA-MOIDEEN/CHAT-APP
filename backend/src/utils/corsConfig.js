@@ -3,7 +3,7 @@ const corsAllows = {
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:5175",
-        "https://c263-49-43-248-255.ngrok-free.app/",
+        "https://702e-49-43-248-255.ngrok-free.app",
     ],
 
     methods:["POST","PUT","DELETE","GET"],
