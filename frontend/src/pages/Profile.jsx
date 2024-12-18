@@ -1,17 +1,15 @@
 import React from 'react';
+import assets from '../assets/assets';
 
 const HomePage = () => {
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-blue-500 to-teal-500 text-white">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold mb-4">Welcome to ChatApp</h1>
-        <p className="text-xl mb-6">Connect with friends and family effortlessly.</p>
-        <img 
-          src="https://via.placeholder.com/400x200" 
-          alt="ChatApp Poster" 
-          className="mx-auto rounded-lg shadow-lg"
-        />
-      </div>
+    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-blue-500 to-teal-500 text-white"
+    style={{ backgroundImage: `url(${assets.HomeBG})`,
+    backgroundSize:'cover',
+    backgroundPosition:'no-repeat',
+    width: '100%',
+    height: '100vh', // or any height you want
+    }}>
     </div>
   );
 };
