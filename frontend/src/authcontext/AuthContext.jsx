@@ -19,6 +19,8 @@ export const AuthProvider = ({ children }) => {
     const [loading,setLoading] = useState(false)
     const [msgLoading,setMsgLoading] = useState(false)
     const [verifiMessage ,setVerifiMessage] = useState()
+    const [isProfile,setProfile] = useState(false)
+    const [isEditName, setEditName] = useState(false);
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
         setToken(null);
@@ -76,6 +78,20 @@ export const AuthProvider = ({ children }) => {
           setLoading(false)
         }
       }
+
+    // editName
+    const editName = async (data) => {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
+    //editAbout
+    const editAbout = async (data) => {
+
+    }
       
     // Check token function memoized with useCallback
     const checkToken = useCallback(() => {
@@ -265,7 +281,8 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup,login,getMessage,msgLoading
+        signup,login,getMessage,msgLoading,isProfile,setProfile,editName,editAbout,
+        isEditName, setEditName
     }), [
         token,
         state,
@@ -285,7 +302,8 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup,login,getMessage,msgLoading
+        signup,login,getMessage,msgLoading,isProfile,setProfile,editName,editAbout,
+        isEditName, setEditName
     ]);
 
     // Run checkToken on mount

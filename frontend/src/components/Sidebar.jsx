@@ -9,7 +9,7 @@ import axios from 'axios';
 import { backendUrl } from '../../config';
 
 const Sidebar = () => {
-	const { navigate, checkToken, token,toggle, setToggle,logout,decodedToken } = useContext(AuthContext);
+	const { navigate, checkToken, token,toggle, setToggle,logout,decodedToken,setProfile,isProfile } = useContext(AuthContext);
 	const [activeItem, setActiveItem] = useState("Home");
 
 	useEffect(() => {
@@ -110,11 +110,11 @@ const Sidebar = () => {
 
 			{/* Profile Section */}
 			<div className="flex gap-2 justify-evenly pb-3 mt-auto cursor-pointer">
-				<img src={decodedToken?.profilePic} alt="Profile Pic" className="w-12 h-12 rounded-full border-2 hover:border-[#EC4A1C]" />
+				<img onClick={()=>setProfile(!isProfile)} src={decodedToken?.profilePic} alt="Profile Pic" className="w-12 h-12 rounded-full border-2 hover:border-[#EC4A1C]" />
 				{toggle && (
 					<div>
 						<h2 className="text-lg font-semibold hover:text-white duration-200">{decodedToken?.fullName}</h2>
-						<span className="text-xs hover:underline">View profile</span>
+						<span  onClick={()=>setProfile(!isProfile)} className="text-xs hover:underline">View profile</span>
 					</div>
 				)}
 			</div>

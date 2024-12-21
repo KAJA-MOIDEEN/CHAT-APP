@@ -12,12 +12,12 @@ const RouterPage = () => {
   return (
     <>
     <Routes>
-      {<Route path="/" element={<Home />}>
+      <Route path="/" element={<Home />}>
       <Route path='/' element={<HomePage />}/>
       <Route path='/Message' element={<Chat />}/>
       <Route path='/settings' element={<Settings/>} />
       <Route path='/wishlist' element={<Settings/>} />
-      </Route>}
+      </Route>
       <Route path="/login" element={<Login />}/>
       <Route path="/notFoundPage" element={<NotFoundPage />}/>
       <Route path="*" element={<NotFoundPage/>} />

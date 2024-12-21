@@ -3,7 +3,9 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../authcontext/AuthContext';
 
 function TopNavbar() {
-  const {decodedToken} = useContext(AuthContext)
+  const {decodedToken,setProfile,isProfile} = useContext(AuthContext)
+  console.log(isProfile);
+  
 
   return (
     <div className="flex items-center justify-between p-3 bg-custom-gradient border">
@@ -23,7 +25,7 @@ function TopNavbar() {
     <div className="flex items-center text-sm text-gray-200 mr-3">
       <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Online
     </div>
-    <img src={decodedToken?.profilePic} alt="Profile" className="h-9 w-9 rounded-full" />
+    <img src={decodedToken?.profilePic} alt="Profile" className="h-9 w-9 rounded-full" onClick={()=>setProfile(!isProfile)} />
   </div>
 </div>
 

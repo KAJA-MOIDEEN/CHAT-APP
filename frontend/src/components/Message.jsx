@@ -65,9 +65,9 @@ const Message = ({ user }) => {
   return (
     <div className="w-full h-full flex flex-col">
       {/* Header */}
-      <div className="h-20 border-b-2 flex items-center px-4 bg-white shadow-md">
+      <div className="h-20 border-b-2 flex items-center p-4 bg-white shadow-md">
         <div
-          className="flex w-full items-center cursor-pointer"
+          className="flex w-full items-center h-12 cursor-pointer"
           onClick={() => SetProfile(!profile)}
         >
           <img
