@@ -7,7 +7,7 @@ import { FiSend } from "react-icons/fi";
 import ChatBG from "../assets/img/ChatBG.svg";
 import Skeleton from "./Skeleton";
 import Convo from "./convo";
-
+const messages = []
 const Message = ({ user }) => {
   const {
     profile,
