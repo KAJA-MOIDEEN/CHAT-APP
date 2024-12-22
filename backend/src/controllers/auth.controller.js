@@ -8,119 +8,120 @@ const crypto = require('crypto');
 const UploadImage = require("../utils/cloudinaryFileUpload");
 
 
-const signup = async (req,res)=>{
+const signup = async (req, res) => {
     try {
-        const {fullName,userName,email,password,confirmPassword,gender,phone} =  req.body;
-        
+        const { fullName, userName, email, password, confirmPassword, gender, phone } = req.body;
+
         // check if user already exists
-        const existingUser = await User.findOne({userName});
+        const existingUser = await User.findOne({ userName });
         if (existingUser) {
-            return res.status(409).json({error:"Username already exists"})
+            return res.status(409).json({ error: "Username already exists" })
         }
         // check if email already exists
-        const existingEmail = await User.findOne({email});
-        if(existingEmail){
-            return res.status(409).json({error:"Email already exists"})
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            return res.status(409).json({ error: "Email already exists" })
         }
         // check if password and confirmPassword are the same
-        if(password !== confirmPassword){
-            return res.status(400).json({error:"Passwords do not match"})
+        if (password !== confirmPassword) {
+            return res.status(400).json({ error: "Passwords do not match" })
         }
         //  hash password
         const salt = await bcrypt.genSalt(10);
         const hasedPassword = await bcrypt.hash(password, salt);
-        
+
         //  create new user
-        const profilePic =  gender === "male" ? `https://avatar.iran.liara.run/public/boy?username=${userName}` : gender ==="female" ? `https://avatar.iran.liara.run/public/girl?username=${userName}` : `https://avatar.iran.liara.run/public/other?username=${userName}`;
+        const profilePic = gender === "male" ? `https://avatar.iran.liara.run/public/boy?username=${userName}` : gender === "female" ? `https://avatar.iran.liara.run/public/girl?username=${userName}` : `https://avatar.iran.liara.run/public/other?username=${userName}`;
         let user = new User({
-            fullName,userName,email,password:hasedPassword,gender,profilePic,phone
+            fullName, userName, email, password: hasedPassword, gender, profilePic, phone
         });
 
         await user.save();
 
         // create a verification modle
         const verify = await new Verify({
-            userId:user._id,
+            userId: user._id,
             token: await crypto.randomBytes(32).toString('hex')
         }).save();
 
         // send email to user for verification
         const url = `${process.env.BASE_URL}${user.id}/verify/${verify.token}/${user.fullName}`
-        await sendEmail(user.email,"Verify Email",url)
+        await sendEmail(user.email, "Verify Email", url)
 
-        res.status(201).json({message:"An Email Send Your Account Please Verify"});
+        res.status(201).json({ message: "An Email Send Your Account Please Verify" });
 
     } catch (error) {
-        console.log("Error",error.message);
-        res.status(500).json({message:"Error in signing up"})
+        console.log("Error", error.message);
+        res.status(500).json({ message: "Error in signing up" })
     }
 }
 
-const login = async (req,res)=>{
+const login = async (req, res) => {
     try {
-        const  {email,password} = req.body;
-        const user = await User.findOne({email});
-        const isMatch = await bcrypt.compare(password,user?.password || "");
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        const isMatch = await bcrypt.compare(password, user?.password || "");
 
-        if(!user ||  !isMatch){
-            return res.status(400).json({error:"Invalid Username or Password"})
+        if (!user || !isMatch) {
+            return res.status(400).json({ error: "Invalid Username or Password" })
         }
         // console.log(!user.verified);
-        
+
         if (!user.verified) {
-            let token = await Verify.findOne({userId:user.id})
-            if(!token){
-            // create a verification modle
-            const verify = await new Verify({
-            userId:user._id,
-            token: await crypto.randomBytes(32).toString('hex')
-            }).save();
-        // send email to user for verification
-        const url = await `${process.env.BASE_URL}${user._id}/verify/${verify.token}/${user.fullName}`
-        
-        await sendEmail(user.email,"Verify Email",url)
+            let token = await Verify.findOne({ userId: user.id })
+            if (!token) {
+                // create a verification modle
+                const verify = await new Verify({
+                    userId: user._id,
+                    token: await crypto.randomBytes(32).toString('hex')
+                }).save();
+                // send email to user for verification
+                const url = await `${process.env.BASE_URL}${user._id}/verify/${verify.token}/${user.fullName}`
+
+                await sendEmail(user.email, "Verify Email", url)
             }
-            
-            return res.status(201).json({message:"An Email Send Your Account Please Verify"})
+
+            return res.status(201).json({ message: "An Email Send Your Account Please Verify" })
         }
-        
+
         //   generate token
-       const token = await genToken(user._id,res);
-       
+        const token = await genToken(user._id, res);
+
         const userDetails = {
-            _id:user._id,
-            fullName:user.fullName,
-            userName:user.userName,
-            email:user.email,
-            profilePic:user.profilePic,
+            _id: user._id,
+            fullName: user.fullName,
+            userName: user.userName,
+            email: user.email,
+            profilePic: user.profilePic,
         }
 
         const accessToken = await setUserToken(userDetails)
-        res.status(200).json({message:"User logged in successfully",
+        res.status(200).json({
+            message: "User logged in successfully",
             accessToken
         })
     } catch (error) {
-        console.log("Error",error.message);
-        res.status(500).json({message:"Error in login"})
+        console.log("Error", error.message);
+        res.status(500).json({ message: "Error in login" })
     }
 }
 
-const  logout = (req,res)=>{
+const logout = (req, res) => {
     try {
-        res.cookie('jwt','',{ maxAge:0 });
-        res.status(200).json({message:"User logged out successfully"});
+        res.cookie('jwt', '', { maxAge: 0 });
+        res.status(200).json({ message: "User logged out successfully" });
 
     } catch (error) {
-        console.log("Error",error.message);
-        res.status(500).json({message:"Error in logout"})
+        console.log("Error", error.message);
+        res.status(500).json({ message: "Error in logout" })
     }
 }
 
 const userVerify = async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-        
-        if(!user){
+
+        if (!user) {
             return res.status(404).json({ message: "Invalid Link" });
         }
 
@@ -138,31 +139,31 @@ const userVerify = async (req, res) => {
         await Verify.deleteOne({ _id: token._id });
 
         res.status(200).json({ message: "Email verified! You can now log in to your account." });
-        
+
     } catch (error) {
         res.status(500).json({ message: "Error in Verify User" });
         console.log("Error in Verify User", error.message);
     }
 };
 
-const profilePic = async (req, res)=>{
-    try {  
+const profilePic = async (req, res) => {
+    try {
         // Check if a file was uploaded
         if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
+            return res.status(400).json({ error: "No file uploaded" });
         }
         // Update the user's profile picture
-        const url = await UploadImage(req.file.path,res);
+        const url = await UploadImage(req.file.path, res);
 
         // Update the user's profile picture in the database
-        const updatedUser = await User.findByIdAndUpdate({_id:req.user._id},{profilePic:url},{new:true});
+        const updatedUser = await User.findByIdAndUpdate({ _id: req.user._id }, { profilePic: url }, { new: true });
 
         // check updateUser 
-        if(!updatedUser){
+        if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        res.status(200).json({message:"Profile picture updated successfully",url:url});
+        res.status(200).json({ message: "Profile picture updated successfully", url: url });
 
     } catch (error) {
         console.log("Error in profilePic", error.message);
@@ -172,4 +173,28 @@ const profilePic = async (req, res)=>{
     }
 }
 
-module.exports = {signup,login,logout,userVerify,profilePic}
+const editProfile = async (req, res) => {
+    try {
+        const { data } = req.body
+        const user = req.user
+        const updatedUser = await User.findByIdAndUpdate(user._id, data, { new: true })
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        const userDetails = {
+            _id: user._id,
+            fullName: user.fullName,
+            userName: user.userName,
+            email: user.email,
+            profilePic: user.profilePic,
+        }
+
+        const accessToken = await setUserToken(userDetails);
+        
+        res.status(200).json({ message: "Profile updated successfully", accessToken });
+    } catch (error) {
+        console.log("Error in editProfile", error.message);
+        res.status(400).json({ error: "Failed to update profile" })
+    }
+}
+module.exports = { signup, login, logout, userVerify, profilePic, editProfile }

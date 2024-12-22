@@ -14,12 +14,12 @@ export const AuthProvider = ({ children }) => {
     const [state, setState] = useState("Login");
     const [users, setUsers] = useState([]);
     const [decodedToken, setDecodedToken] = useState(null);
-    const [conversation,setConversation] = useState(null)
+    const [conversation, setConversation] = useState(null)
     const navigate = useNavigate();
-    const [loading,setLoading] = useState(false)
-    const [msgLoading,setMsgLoading] = useState(false)
-    const [verifiMessage ,setVerifiMessage] = useState()
-    const [isProfile,setProfile] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [msgLoading, setMsgLoading] = useState(false)
+    const [verifiMessage, setVerifiMessage] = useState()
+    const [isProfile, setProfile] = useState(false)
     const [isEditName, setEditName] = useState(false);
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
@@ -36,55 +36,63 @@ export const AuthProvider = ({ children }) => {
     const login = async (data) => {
         setLoading(true)
         try {
-          const res = await axios.post(backendUrl + "/api/auth/login", data, { withCredentials: true });
-    
-          if (res.status === 201) {
-            return toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
-          }
-    
-          if (res.status === 200) {
-            toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
-            const token = res.data?.accessToken
-            setToken(token);
-            localStorage.setItem("accessToken", token)
-            navigate("/")
-            return
-          }
+            const res = await axios.post(backendUrl + "/api/auth/login", data, { withCredentials: true });
+
+            if (res.status === 201) {
+                return toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+            }
+
+            if (res.status === 200) {
+                toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+                const token = res.data?.accessToken
+                setToken(token);
+                localStorage.setItem("accessToken", token)
+                navigate("/")
+                return
+            }
         } catch (error) {
-          toast.error(error.response?.data?.error)
-        }finally{
-          setLoading(false)
+            toast.error(error.response?.data?.error)
+        } finally {
+            setLoading(false)
         }
-      }
+    }
 
     // signup 
     const signup = async (data) => {
         setLoading(true)
         try {
-          const res = await axios.post(backendUrl + "/api/auth/signup", data, { withCredentials: true });
-          if (res.status === 201) {
-            toast.success(res.data.message, { style: { backgroundColor: '#EC4A1C', color: "white" } });
-            const token = res.data.accessToken
-            setToken(token);
-            navigate("/")
-            return
-          }
+            const res = await axios.post(backendUrl + "/api/auth/signup", data, { withCredentials: true });
+            if (res.status === 201) {
+                toast.success(res.data.message, { style: { backgroundColor: '#EC4A1C', color: "white" } });
+                const token = res.data.accessToken
+                setToken(token);
+                navigate("/")
+                return
+            }
         } catch (error) {
-          if (error.response?.data?.error) {
-            return toast.error(error.response?.data?.error)
-          }
-          toast.error(error.message)
-        }finally{
-          setLoading(false)
+            if (error.response?.data?.error) {
+                return toast.error(error.response?.data?.error)
+            }
+            toast.error(error.message)
+        } finally {
+            setLoading(false)
         }
-      }
+    }
 
     // editName
     const editName = async (data) => {
         try {
-            
+            const res = await axios.put(backendUrl + "edit-user-profile", data, { withCredentials: true })
+            if (res.status === 200) {
+                toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } })
+                const token = res.data?.accessToken
+                setToken(token);
+                localStorage.setItem("accessToken", token)
+            }
         } catch (error) {
-            
+            if (error.response?.data?.error) {
+                return toast.error(error.response?.data?.error)
+            }
         }
     }
 
@@ -92,7 +100,7 @@ export const AuthProvider = ({ children }) => {
     const editAbout = async (data) => {
 
     }
-      
+
     // Check token function memoized with useCallback
     const checkToken = useCallback(() => {
         const token = localStorage.getItem("accessToken");
@@ -115,7 +123,7 @@ export const AuthProvider = ({ children }) => {
                 return toast.error(error.response?.data?.error);
             }
             toast.error(error.message);
-        }finally{
+        } finally {
             setLoading(false)
         }
     }, []);
@@ -156,7 +164,7 @@ export const AuthProvider = ({ children }) => {
             }
             console.error("Error Fetching Messages:", error);
             return null; // Return null if an error occurred
-        }finally{
+        } finally {
             setMsgLoading(false)
         }
     }, [backendUrl, navigate]); // Add dependencies here
@@ -200,7 +208,7 @@ export const AuthProvider = ({ children }) => {
     }, [backendUrl, navigate]); // Add dependencies here
 
     // verifyEmail
-    const verifyEmail = useCallback(async (id,token) => {
+    const verifyEmail = useCallback(async (id, token) => {
         try {
             setLoading(true)
             const response = await axios.get(`${backendUrl}/api/auth/${id}/verify/${token}`);
@@ -211,49 +219,49 @@ export const AuthProvider = ({ children }) => {
             console.error("Error Verifying Email:", error);
             toast.error(error.response?.data?.message);
             setVerifiMessage(error.response?.data?.message);
-        }finally{
+        } finally {
             setLoading(false)
         }
-    },[backendUrl, navigate]);
+    }, [backendUrl, navigate]);
 
     // sending message
-    const sendMessage = useCallback( async(message,id)=>{
+    const sendMessage = useCallback(async (message, id) => {
         console.log(message);
-        
+
         try {
-            const res = await axios.post(`${backendUrl}/api/message/send/${id}`, {message}, { withCredentials: true });
+            const res = await axios.post(`${backendUrl}/api/message/send/${id}`, { message }, { withCredentials: true });
             if (res.status === 200) {
                 console.log("Message Sent Successfully");
                 return setConversation((prev) => [...prev, res.data.message]);
-                }
+            }
         } catch (error) {
             // Error Handling
-            if (error.response) { 
+            if (error.response) {
                 // Server responded with a status code outside the 2xx range
                 const { status, data } = error.response;
                 if (status === 401) {
                     // Unauthorized
                     toast.error(data.message || "You Are Not Authorized to Access This Resource");
                     navigate("/login"); // Redirect to login page
-                    } else if (status === 404) {
-                        // Not Found
-                        toast.error(data.message || "Resource Not Found");
-                        } else if (status === 500) {
-                            toast.error(data.message || "Internal Server Error");
-                            } else {
-                                toast.error("An Unexpected Error Occurred. Please Try Again.");
-                                }
-                                } else if (error.request) {
-                                    // No response was received from the server
-                                    toast.error("No Response From The Server. Please Check Your Network Connection.");
-                                    } else {
-                                        // Something went wrong in setting up the request
-                                        toast.error(`Request Failed: ${error.message}`);
-                                        }
-                                        console.error("Error Sending Message:", error);
-                                        return null; // Return null if an error occurred
-                                        }
-                                         // Add dependencies here
+                } else if (status === 404) {
+                    // Not Found
+                    toast.error(data.message || "Resource Not Found");
+                } else if (status === 500) {
+                    toast.error(data.message || "Internal Server Error");
+                } else {
+                    toast.error("An Unexpected Error Occurred. Please Try Again.");
+                }
+            } else if (error.request) {
+                // No response was received from the server
+                toast.error("No Response From The Server. Please Check Your Network Connection.");
+            } else {
+                // Something went wrong in setting up the request
+                toast.error(`Request Failed: ${error.message}`);
+            }
+            console.error("Error Sending Message:", error);
+            return null; // Return null if an error occurred
+        }
+        // Add dependencies here
     }, [backendUrl, navigate]);
 
     // Memoized data object
@@ -281,7 +289,7 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup,login,getMessage,msgLoading,isProfile,setProfile,editName,editAbout,
+        signup, login, getMessage, msgLoading, isProfile, setProfile, editName, editAbout,
         isEditName, setEditName
     }), [
         token,
@@ -302,7 +310,7 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup,login,getMessage,msgLoading,isProfile,setProfile,editName,editAbout,
+        signup, login, getMessage, msgLoading, isProfile, setProfile, editName, editAbout,
         isEditName, setEditName
     ]);
 
