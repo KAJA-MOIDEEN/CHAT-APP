@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     password:{type:String,required:true,minlength:6},
     gender:{type:String,required:true,enum:["male","female","others"]},
     profilePic:{type:String,default:""},
-    verified:{type:Boolean,default:false}
+    verified:{type:Boolean,default:false},
+    about:{type:String,default:""}
 },{
     // Automatically adds createdAt and updatedAt
     timestamps:true

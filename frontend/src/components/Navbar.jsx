@@ -3,9 +3,7 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../authcontext/AuthContext';
 
 function TopNavbar() {
-  const {decodedToken,setProfile,isProfile} = useContext(AuthContext)
-  console.log(isProfile);
-  
+  const {decodedToken,setProfile,isProfile} = useContext(AuthContext);
 
   return (
     <div className="flex items-center justify-between p-3 bg-custom-gradient border">

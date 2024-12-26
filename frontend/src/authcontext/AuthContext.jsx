@@ -21,6 +21,9 @@ export const AuthProvider = ({ children }) => {
     const [verifiMessage, setVerifiMessage] = useState()
     const [isProfile, setProfile] = useState(false)
     const [isEditName, setEditName] = useState(false);
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isEditAbout, setEditAbout] = useState(false);
+    const [isLoading,setIsLoading] = useState(false);
     // Logout function memoized with useCallback
     const logout = useCallback(() => {
         setToken(null);
@@ -79,26 +82,91 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    // edit ProfilePic
+    const ProfilePicUpload = async (file) => {
+        
+        console.log(file);
+        
+        if (file) {
+            try {
+                setIsLoading(!isLoading)
+                setDropdownOpen(!isDropdownOpen)
+                console.log(file);
+                
+                // Example: Replace this with an actual API call to upload the file
+                const formData = new FormData();
+                formData.append('profilePic', file);
+
+                const res = await axios.post(`${backendUrl}/api/auth/profilePic`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    withCredentials: true
+                });
+                if (res.status === 200) {
+                    toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+                    const token = res.data?.accessToken
+                    setToken(token);
+                    localStorage.setItem("accessToken", token)
+                    let decoded = jwtDecode(token);
+                    decoded = decoded?.user
+                    setDecodedToken(decoded);
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error.response ? error.response.data : error.message);
+            }finally{
+                setIsLoading(false)
+            }
+        }
+    };
+
     // editName
-    const editName = async (data) => {
+    const editName = async (name) => {
         try {
-            const res = await axios.put(backendUrl + "edit-user-profile", data, { withCredentials: true })
+            const res = await axios.put(`${backendUrl}/api/auth/edit-profile`,{data:{fullName:name}},{withCredentials:true})
             if (res.status === 200) {
-                toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } })
+                toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
                 const token = res.data?.accessToken
                 setToken(token);
                 localStorage.setItem("accessToken", token)
+                let decoded = jwtDecode(token);
+                decoded = decoded?.user
+                setDecodedToken(decoded);
+                return
             }
         } catch (error) {
             if (error.response?.data?.error) {
                 return toast.error(error.response?.data?.error)
             }
+        }finally{
+            setEditName(false)
         }
     }
 
     //editAbout
-    const editAbout = async (data) => {
-
+    const editAbout = async (about) => {
+        try {
+            console.log(about);
+            
+            const res = await axios.put(`${backendUrl}/api/auth/edit-profile`,{data:{about:about}},{withCredentials:true})
+            if (res.status === 200) {
+                toast.success(res.data.message, { style: { backgroundColor: '#994AD2', color: "white" } });
+                const token = res.data?.accessToken
+                setToken(token);
+                localStorage.setItem("accessToken", token)
+                let decoded = jwtDecode(token);
+                decoded = decoded?.user
+                setDecodedToken(decoded);
+                return
+            }
+        } catch (error) {
+            if (error.response?.data?.error) {
+                return toast.error(error.response?.data?.error)
+            }
+        }finally{
+            setEditName(false)
+            setEditAbout(false)
+        }
     }
 
     // Check token function memoized with useCallback
@@ -289,8 +357,8 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup, login, getMessage, msgLoading, isProfile, setProfile, editName, editAbout,
-        isEditName, setEditName
+        signup, login, getMessage, msgLoading, isProfile, setProfile, editName, editAbout, ProfilePicUpload,
+        isEditName, setEditName,isDropdownOpen, setDropdownOpen,isEditAbout, setEditAbout,isLoading,setIsLoading
     }), [
         token,
         state,
@@ -310,8 +378,8 @@ export const AuthProvider = ({ children }) => {
         sendMessage,
         verifyEmail,
         verifiMessage,
-        signup, login, getMessage, msgLoading, isProfile, setProfile, editName, editAbout,
-        isEditName, setEditName
+        signup, login, getMessage, msgLoading, isProfile, setProfile, editName, editAbout, ProfilePicUpload,
+        isEditName, setEditName,isDropdownOpen, setDropdownOpen,isEditAbout, setEditAbout,isLoading,setIsLoading
     ]);
 
     // Run checkToken on mount

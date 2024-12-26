@@ -16,7 +16,7 @@ const HomePage = () => {
               <span className="italic">Let's make meaningful connections. 😊</span>
             </p>
 
-            <img className='absolute w-[24%] -top-1' src={assets.WomenPicBG} alt="WomenPicBG" />
+            <img className='sm: absolute xl:w-[24%] -top-1' src={assets.WomenPicBG} alt="WomenPicBG" />
             <img className='absolute w-[40%] bottom-0' src={assets.MsgInput} alt="MsgInput" />
           </div>
         </div>

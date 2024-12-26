@@ -24,3 +24,8 @@
 }
 
   
+input:-webkit-autofill {
+  background-color: white !important; /* Change to your desired color */
+  color: black !important;           /* Adjust text color if needed */
+  transition: background-color 5000s ease-in-out 0s; /* Prevent flashing */
+}

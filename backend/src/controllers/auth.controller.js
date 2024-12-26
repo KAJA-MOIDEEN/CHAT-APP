@@ -93,6 +93,7 @@ const login = async (req, res) => {
             userName: user.userName,
             email: user.email,
             profilePic: user.profilePic,
+            about:user.about
         }
 
         const accessToken = await setUserToken(userDetails)
@@ -150,10 +151,14 @@ const profilePic = async (req, res) => {
     try {
         // Check if a file was uploaded
         if (!req.file) {
-            return res.status(400).json({ error: "No file uploaded" });
+            return res.status(400).json({ error: "No file uploaded. Please select an image." });
         }
+        console.log("Uploaded file details:", req.file);
         // Update the user's profile picture
         const url = await UploadImage(req.file.path, res);
+        if (!url) {
+            return res.status(500).json({ error: "Failed to upload image. Please try again later." });
+          }
 
         // Update the user's profile picture in the database
         const updatedUser = await User.findByIdAndUpdate({ _id: req.user._id }, { profilePic: url }, { new: true });
@@ -162,8 +167,17 @@ const profilePic = async (req, res) => {
         if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
         }
+        const userDetails = {
+            _id: updatedUser._id,
+            fullName: updatedUser.fullName,
+            userName: updatedUser.userName,
+            email: updatedUser.email,
+            profilePic: updatedUser.profilePic,
+            about:updatedUser.about
+        }
 
-        res.status(200).json({ message: "Profile picture updated successfully", url: url });
+        const accessToken = await setUserToken(userDetails)
+        res.status(200).json({ message: "Profile picture updated successfully", accessToken });
 
     } catch (error) {
         console.log("Error in profilePic", error.message);
@@ -176,17 +190,20 @@ const profilePic = async (req, res) => {
 const editProfile = async (req, res) => {
     try {
         const { data } = req.body
+        console.log("PROFILE DATA",data);
+        
         const user = req.user
         const updatedUser = await User.findByIdAndUpdate(user._id, data, { new: true })
         if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
         }
         const userDetails = {
-            _id: user._id,
-            fullName: user.fullName,
-            userName: user.userName,
-            email: user.email,
-            profilePic: user.profilePic,
+            _id: updatedUser._id,
+            fullName: updatedUser.fullName,
+            userName: updatedUser.userName,
+            email: updatedUser.email,
+            profilePic: updatedUser.profilePic,
+            about:updatedUser.about
         }
 
         const accessToken = await setUserToken(userDetails);

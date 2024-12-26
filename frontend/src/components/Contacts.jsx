@@ -25,7 +25,7 @@ const Contacts = ({ setUser }) => {
             setUser(data);
             getMessages(data._id)
           }}
-          className="flex gap-3 p-2 border-2 hover:border-white border-transparent rounded-lg focus:outline-none focus:bg-[#e4674576]"
+          className="flex gap-3 p-2 border-2 hover:border-white border-transparent rounded-lg focus:outline-none focus:bg-[#e4674576] relative"
           tabIndex="0"
         >
           <img
@@ -33,6 +33,7 @@ const Contacts = ({ setUser }) => {
             alt=""
             className="w-12 h-12 rounded-full border-2 border-transparent hover:border-[#EC4A1C]"
           />
+          <span className='bg-green-600 absolute w-3 h-3 rounded-full bottom-3 border-2'></span>
           <div className="text-wrap text-white">
             <h2 className="text-lg font-semibold">{data.fullName}</h2>
             <p className="text-xs dark:text-gray-600">View profile</p>

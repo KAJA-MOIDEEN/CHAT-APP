@@ -1,6 +1,6 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import 'remixicon/fonts/remixicon.css';
-import axios from "axios"
+import axios from "axios";
 import { backendUrl } from '../../config';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../authcontext/AuthContext';
@@ -8,7 +8,7 @@ import LoadingButton from '../components/LoadingButton';
 import assets from '../assets/assets';
 
 const Login = () => {
-  const { setToken, state, setState, navigate, loading, setLoading ,signup,login} = useContext(AuthContext);
+  const { setToken, state, setState, navigate, loading, setLoading, signup, login } = useContext(AuthContext);
   const refFullName = useRef(null);
   const refUserName = useRef(null);
   const refGenderMale = useRef(null);
@@ -18,12 +18,10 @@ const Login = () => {
   const refPassword = useRef(null);
   const refConfirmPassword = useRef(null);
   const refPhone = useRef(null);
-  console.log(loading);
-  
+  const [show, setShow] = useState({ password: false, confirmPassword: false });
 
-  
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (state === "Signup") {
       const gender = refGenderMale.current.checked
         ? "male"
@@ -41,24 +39,32 @@ const Login = () => {
         email: refEmail?.current.value,
         password: refPassword?.current.value,
         confirmPassword: refConfirmPassword?.current.value
-      }
-      signup(data)
+      };
+      signup(data);
     } else {
       const data = {
         email: refEmail?.current.value,
         password: refPassword?.current.value
-      }
-      login(data)
+      };
+      login(data);
     }
-  }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken")
+    const token = localStorage.getItem("accessToken");
     setToken(token);
     if (token) {
-      navigate("/")
+      navigate("/");
     }
   }, []);
+
+  // Toggle password visibility function
+  const togglePasswordVisibility = (field) => {
+    setShow(prevState => ({
+      ...prevState,
+      [field]: !prevState[field]
+    }));
+  };
 
   return (
     <div className="bg-cover bg-center h-screen flex items-center justify-center bg-gray-900 text-white relative select-none">
@@ -75,7 +81,7 @@ const Login = () => {
                   type="text"
                   placeholder="Full Name"
                   required
-                  className="bg-transparent flex-1 py-3 text-white placeholder-white focus:outline-none"
+                  className="bg-transparent text-lg flex-1 py-3 text-white placeholder-white focus:outline-none"
                   ref={refFullName}
                 />
                 <i className="ri-account-circle-fill text-xl"></i>
@@ -86,7 +92,7 @@ const Login = () => {
                   type="text"
                   placeholder="User Name"
                   required
-                  className="bg-transparent flex-1 py-3 text-white placeholder-white focus:outline-none"
+                  className="bg-transparent text-lg flex-1 py-3 text-white placeholder-white focus:outline-none"
                   ref={refUserName}
                 />
                 <i className="ri-user-fill text-xl"></i>
@@ -96,7 +102,7 @@ const Login = () => {
                   type="number"
                   placeholder="phone"
                   required
-                  className="bg-transparent flex-1 py-3 text-white placeholder-white focus:outline-none"
+                  className="bg-transparent text-lg flex-1 py-3 text-white placeholder-white focus:outline-none"
                   ref={refPhone}
                 />
                 <i className="ri-cell-fill text-xl"></i>
@@ -125,7 +131,7 @@ const Login = () => {
               type="email"
               placeholder="Email ID"
               required
-              className="bg-transparent flex-1 py-3 text-white placeholder-white focus:outline-none"
+              className="bg-transparent flex-1 py-3 text-lg text-white placeholder-white focus:outline-none"
               ref={refEmail}
             />
             <i className="ri-mail-fill text-xl"></i>
@@ -133,25 +139,27 @@ const Login = () => {
 
           <div className="flex items-center border border-white/70 px-4 rounded-full">
             <input
-              type="password"
+              type={show.password ? 'text' : 'password'}
               placeholder="Password"
               required
-              className="bg-transparent flex-1 py-3 text-white placeholder-white focus:outline-none"
+              className="bg-transparent flex-1 py-3 text-lg text-white placeholder-white focus:outline-none"
               ref={refPassword}
             />
-            <i className="ri-lock-2-fill text-xl"></i>
+            <i className="ri-lock-2-fill text-xl" onClick={() => togglePasswordVisibility('password')}></i>
           </div>
 
-          {state === "Signup" ? <div className="flex items-center border border-white/70 px-4 rounded-full">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              required
-              className="bg-transparent flex-1 py-3 text-white placeholder-white focus:outline-none"
-              ref={refConfirmPassword}
-            />
-            <i className="ri-lock-2-fill text-xl"></i>
-          </div> : ""}
+          {state === "Signup" && (
+            <div className="flex items-center border border-white/70 px-4 rounded-full">
+              <input
+                type={show.confirmPassword ? 'text' : 'password'}
+                placeholder="Confirm Password"
+                required
+                className="bg-transparent flex-1 py-3 text-lg text-white placeholder-white focus:outline-none"
+                ref={refConfirmPassword}
+              />
+              <i className="ri-lock-2-fill text-xl" onClick={() => togglePasswordVisibility('confirmPassword')}></i>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-between items-center mt-4 text-sm">
@@ -163,9 +171,13 @@ const Login = () => {
           <button className="text-white hover:underline">Forgot Password?</button>
         </div>
 
-        {loading ? (<LoadingButton />) : (<button type="submit" className="w-full py-3 mt-6 bg-white text-black font-semibold rounded-full hover:bg-gray-200">
-          {state === "Signup" ? "Signup" : "Login"}
-        </button>)}
+        {loading ? (
+          <LoadingButton />
+        ) : (
+          <button type="submit" className="w-full py-3 mt-6 bg-white text-black font-semibold rounded-full hover:bg-gray-200">
+            {state === "Signup" ? "Signup" : "Login"}
+          </button>
+        )}
 
         {state === "Signup" ? (
           <div onClick={() => setState("Login")} className="text-sm text-center mt-4">
@@ -179,6 +191,6 @@ const Login = () => {
       </form>
     </div>
   );
-}
+};
 
 export default Login;

@@ -59,6 +59,7 @@ const Sidebar = () => {
 							onClick={() => {
 								navigate("/message");
 								setActiveItem("Chat");
+								setProfile(false)
 							}}
 							className={`flex items-center p-2 space-x-3 rounded-md ${toggle?"w-full":""} ${activeItem === "Chat" ? "bg-[#EC4A1C] text-black" : "hover:text-white duration-200"
 								}`}
@@ -110,11 +111,13 @@ const Sidebar = () => {
 
 			{/* Profile Section */}
 			<div className="flex gap-2 justify-evenly pb-3 mt-auto cursor-pointer">
-				<img onClick={()=>setProfile(!isProfile)} src={decodedToken?.profilePic} alt="Profile Pic" className="w-12 h-12 rounded-full border-2 hover:border-[#EC4A1C]" />
+				<img onClick={()=>{setProfile(!isProfile); navigate('/message')}} src={decodedToken?.profilePic} alt="Profile Pic" className="w-12 h-12 rounded-full border-2 hover:border-[#EC4A1C]" />
 				{toggle && (
 					<div>
 						<h2 className="text-lg font-semibold hover:text-white duration-200">{decodedToken?.fullName}</h2>
-						<span  onClick={()=>setProfile(!isProfile)} className="text-xs hover:underline">View profile</span>
+						<span  onClick={()=>{setProfile(!isProfile)
+							navigate('/message')
+						}} className="text-xs hover:underline">View profile</span>
 					</div>
 				)}
 			</div>
