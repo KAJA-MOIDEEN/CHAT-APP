@@ -121,16 +121,15 @@ const logout = (req, res) => {
 const userVerify = async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.params.id });
-
         if (!user) {
-            return res.status(404).json({ message: "Invalid Link" });
+            return res.status(404).json({ message: "Invalid Link" });            
         }
 
         const token = await Verify.findOne({
             userId: user._id,
             token: req.params.token,
         });
-
+        
         if (!token) return res.status(404).json({ message: "Invalid Link" });
 
         // Update only the 'verified' field

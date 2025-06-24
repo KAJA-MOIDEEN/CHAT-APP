@@ -26,9 +26,9 @@ const Message = ({ user }) => {
   // Fetch conversation when component mounts or when the user changes
   useEffect(() => {
     if (user) {
-      getMessage(user._id);
+      getMessage(user?._id);  
     }
-  }, [user, getMessage]);
+  }, [user]);
 
   // Auto-scroll to the bottom when conversation updates
   useEffect(() => {
@@ -42,9 +42,9 @@ const Message = ({ user }) => {
     if (!message.trim()) return; // Prevent sending empty messages
     const currentMessage = message.trim(); // Capture the current message
     setMessage(""); // Clear input immediately
-    await sendMessage(currentMessage, user._id);
-    await getMessage(user._id); // Re-fetch conversation
-  }, [message, user._id, sendMessage, getMessage]);
+    await sendMessage(currentMessage, user?._id);
+    await getMessage(user?._id); // Re-fetch conversation
+  }, [message, user?._id, sendMessage, getMessage]);
 
   if (msgLoading) {
     return (
@@ -54,7 +54,7 @@ const Message = ({ user }) => {
     );
   }
 
-  if (!user || !user.profilePic) {
+  if (!user || !user?.profilePic) {
     return (
       <div className="flex justify-center items-center w-full h-full bg-gray-100">
         <p className="text-gray-500 text-lg">No profile data available</p>
@@ -71,12 +71,12 @@ const Message = ({ user }) => {
           onClick={() => SetProfile(!profile)}
         >
           <img
-            src={user.profilePic}
+            src={user?.profilePic}
             alt="User Profile"
             className="w-12 h-12 rounded-full border-2 border-transparent hover:border-[#EC4A1C]"
           />
           <div className="ml-4 font-bold text-lg hover:text-[#EC4A1C]">
-            {user.fullName}
+            {user?.fullName}
           </div>
           <div className="flex items-center mx-3 text-sm text-slate-500">
             <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span>{" "}

@@ -8,11 +8,11 @@ import UserProfile from '../components/UserProfile';
 
 const Chat = () => {
   const { profile, getAllUser,loading,isProfile} = useContext(AuthContext);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     getAllUser();
-  }, []);
+  }, []); 
 
   if (loading) {
     return(
