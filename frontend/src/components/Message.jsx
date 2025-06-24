@@ -43,7 +43,7 @@ const Message = ({ user }) => {
     const currentMessage = message.trim(); // Capture the current message
     setMessage(""); // Clear input immediately
     await sendMessage(currentMessage, user?._id);
-    await getMessage(user?._id); // Re-fetch conversation
+    // await getMessage(user?._id); // Re-fetch conversation
   }, [message, user?._id, sendMessage, getMessage]);
 
   if (msgLoading) {

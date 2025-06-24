@@ -361,17 +361,15 @@ export const AuthProvider = ({ children }) => {
   // sending message
   const sendMessage = useCallback(
     async (message, id) => {
-      console.log(message);
-
       try {
         const res = await axios.post(
           `${backendUrl}/api/message/send/${id}`,
           { message },
           { withCredentials: true }
         );
-        if (res.status === 200) {
-          console.log("Message Sent Successfully");
-          return setConversation((prev) => [...prev, res.data.message]);
+        if (res.status === 201) {
+          // console.log("Message Sent Successfully");
+          return setConversation((prev) => [...prev, res.data.newMessage]);
         }
       } catch (error) {
         // Error Handling
